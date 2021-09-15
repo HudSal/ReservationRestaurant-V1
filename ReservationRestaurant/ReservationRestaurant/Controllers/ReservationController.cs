@@ -212,10 +212,10 @@ namespace ReservationRestaurant.Controllers
             if (selectedSitting == null)
             {
                 preCreate.SittingTypeSL = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name));
-                preCreate.Message = "The selected day is not found";
+                preCreate.Message = "The selected day has no particular sittings";
                 return View(preCreate);
             }
-            if (selectedSitting.IsClosed == true)
+            if (selectedSitting.IsClosed == true || selectedSitting.Vacancies < preCreate.Guests)
             {
                 preCreate.SittingTypeSL = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name));
                 preCreate.Message = "The selected sitting is full";

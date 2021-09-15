@@ -10,8 +10,8 @@ using ReservationRestaurant.Data;
 namespace ReservationRestaurant.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210909041929_Initial")]
-    partial class Initial
+    [Migration("20210912143601_DropGuestFromSittingAndDataSeedingforSitting")]
+    partial class DropGuestFromSittingAndDataSeedingforSitting
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -239,6 +239,26 @@ namespace ReservationRestaurant.Migrations
                     b.HasIndex("RestaurantId");
 
                     b.ToTable("Area");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Main",
+                            RestaurantId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Outside",
+                            RestaurantId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Balcony",
+                            RestaurantId = 1
+                        });
                 });
 
             modelBuilder.Entity("ReservationRestaurant.Data.Person", b =>
@@ -249,21 +269,28 @@ namespace ReservationRestaurant.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("People");
                 });
@@ -322,6 +349,28 @@ namespace ReservationRestaurant.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ReservationOrigins");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Phone"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Email"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Online"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "In Person"
+                        });
                 });
 
             modelBuilder.Entity("ReservationRestaurant.Data.ReservationStatus", b =>
@@ -337,6 +386,33 @@ namespace ReservationRestaurant.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ReservationStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Pending"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Confirmed"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Cancelled"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Seated"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Complete"
+                        });
                 });
 
             modelBuilder.Entity("ReservationRestaurant.Data.Restaurant", b =>
@@ -347,22 +423,29 @@ namespace ReservationRestaurant.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("RestaurantId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RestaurantId");
-
                     b.ToTable("Restaurants");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "69 Bean Street",
+                            Name = "Bean Scene",
+                            PhoneNumber = "04 8888 9999"
+                        });
                 });
 
             modelBuilder.Entity("ReservationRestaurant.Data.Sitting", b =>
@@ -378,13 +461,11 @@ namespace ReservationRestaurant.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Guest")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsClosed")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RestaurantId")
@@ -403,6 +484,41 @@ namespace ReservationRestaurant.Migrations
                     b.HasIndex("SittingTypeId");
 
                     b.ToTable("Sittings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Capacity = 30,
+                            EndTime = new DateTime(2021, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsClosed = false,
+                            Name = "Middle Eastern Breakfast",
+                            RestaurantId = 1,
+                            SittingTypeId = 1,
+                            StartTime = new DateTime(2021, 1, 1, 9, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Capacity = 30,
+                            EndTime = new DateTime(2021, 1, 1, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsClosed = false,
+                            Name = "Middle Eastern Lunch",
+                            RestaurantId = 1,
+                            SittingTypeId = 2,
+                            StartTime = new DateTime(2021, 1, 1, 13, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Capacity = 30,
+                            EndTime = new DateTime(2021, 1, 1, 21, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsClosed = false,
+                            Name = "Middle Eastern Dinner",
+                            RestaurantId = 1,
+                            SittingTypeId = 3,
+                            StartTime = new DateTime(2021, 1, 1, 17, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("ReservationRestaurant.Data.SittingType", b =>
@@ -418,6 +534,28 @@ namespace ReservationRestaurant.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SittingTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Breakfast"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Lunch"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Dinner"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Other"
+                        });
                 });
 
             modelBuilder.Entity("ReservationRestaurant.Data.Table", b =>
@@ -438,19 +576,201 @@ namespace ReservationRestaurant.Migrations
                     b.HasIndex("AreaId");
 
                     b.ToTable("Tables");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AreaId = 1,
+                            Name = "M1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AreaId = 1,
+                            Name = "M2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AreaId = 1,
+                            Name = "M3"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AreaId = 1,
+                            Name = "M4"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AreaId = 1,
+                            Name = "M5"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AreaId = 1,
+                            Name = "M6"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AreaId = 1,
+                            Name = "M7"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            AreaId = 1,
+                            Name = "M8"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            AreaId = 1,
+                            Name = "M9"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            AreaId = 1,
+                            Name = "M10"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            AreaId = 2,
+                            Name = "O1"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            AreaId = 2,
+                            Name = "O2"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            AreaId = 2,
+                            Name = "O3"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            AreaId = 2,
+                            Name = "O4"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            AreaId = 2,
+                            Name = "O5"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            AreaId = 2,
+                            Name = "O6"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            AreaId = 2,
+                            Name = "O7"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            AreaId = 2,
+                            Name = "O8"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            AreaId = 2,
+                            Name = "O9"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            AreaId = 2,
+                            Name = "O10"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            AreaId = 3,
+                            Name = "B1"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            AreaId = 3,
+                            Name = "B2"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            AreaId = 3,
+                            Name = "B3"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            AreaId = 3,
+                            Name = "B4"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            AreaId = 3,
+                            Name = "B5"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            AreaId = 3,
+                            Name = "B6"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            AreaId = 3,
+                            Name = "B7"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            AreaId = 3,
+                            Name = "B8"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            AreaId = 3,
+                            Name = "B9"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            AreaId = 3,
+                            Name = "B10"
+                        });
                 });
 
             modelBuilder.Entity("ReservationTable", b =>
                 {
-                    b.Property<int>("ReservationTableId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ReservationsId")
                         .HasColumnType("int");
 
-                    b.HasKey("ReservationTableId", "ReservationsId");
+                    b.Property<int>("TablesId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("ReservationsId");
+                    b.HasKey("ReservationsId", "TablesId");
+
+                    b.HasIndex("TablesId");
 
                     b.ToTable("ReservationTable");
                 });
@@ -552,17 +872,10 @@ namespace ReservationRestaurant.Migrations
                     b.Navigation("Sitting");
                 });
 
-            modelBuilder.Entity("ReservationRestaurant.Data.Restaurant", b =>
-                {
-                    b.HasOne("ReservationRestaurant.Data.Restaurant", null)
-                        .WithMany("Restaurants")
-                        .HasForeignKey("RestaurantId");
-                });
-
             modelBuilder.Entity("ReservationRestaurant.Data.Sitting", b =>
                 {
                     b.HasOne("ReservationRestaurant.Data.Restaurant", "Restaurant")
-                        .WithMany()
+                        .WithMany("Sittings")
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -591,15 +904,15 @@ namespace ReservationRestaurant.Migrations
 
             modelBuilder.Entity("ReservationTable", b =>
                 {
-                    b.HasOne("ReservationRestaurant.Data.Table", null)
-                        .WithMany()
-                        .HasForeignKey("ReservationTableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ReservationRestaurant.Data.Reservation", null)
                         .WithMany()
                         .HasForeignKey("ReservationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ReservationRestaurant.Data.Table", null)
+                        .WithMany()
+                        .HasForeignKey("TablesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -618,7 +931,7 @@ namespace ReservationRestaurant.Migrations
                 {
                     b.Navigation("Areas");
 
-                    b.Navigation("Restaurants");
+                    b.Navigation("Sittings");
                 });
 
             modelBuilder.Entity("ReservationRestaurant.Data.Sitting", b =>

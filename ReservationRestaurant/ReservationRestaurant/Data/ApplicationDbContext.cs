@@ -9,7 +9,6 @@ namespace ReservationRestaurant.Data
     public class ApplicationDbContext : IdentityDbContext
     {
         public DbSet<Person> People { get; set; }
-
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<ReservationOrigin> ReservationOrigins { get; set; }
         public DbSet<ReservationStatus> ReservationStatuses { get; set; }
@@ -17,9 +16,6 @@ namespace ReservationRestaurant.Data
         public DbSet<Sitting> Sittings { get; set; }
         public DbSet<SittingType> SittingTypes { get; set; }
         public DbSet<Table> Tables { get; set; }
-
-
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -32,6 +28,12 @@ namespace ReservationRestaurant.Data
             builder.Entity<Restaurant>()
                 .Property(r => r.Name)
                 .IsRequired();
+            builder.Entity<Restaurant>()
+               .Property(r => r.PhoneNumber)
+               .IsRequired();
+            builder.Entity<Restaurant>()
+               .Property(r => r.Address)
+               .IsRequired();
 
             //sitting
 
@@ -68,6 +70,9 @@ namespace ReservationRestaurant.Data
             builder.Entity<Person>()
                .Property(p => p.Email)
                .IsRequired();
+            builder.Entity<Person>()
+              .HasIndex(p => p.Email)
+              .IsUnique();
             builder.Entity<Person>()
                .Property(p => p.Phone)
                .IsRequired();

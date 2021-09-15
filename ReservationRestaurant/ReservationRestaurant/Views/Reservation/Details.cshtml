@@ -1,0 +1,85 @@
+﻿@model ReservationRestaurant.Data.Reservation
+
+@{
+    ViewData["Title"] = "Reservation Details Review";
+}
+
+<h1>Review Reservation Details </h1>
+
+<div>
+    <h4>Reservation</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Person)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Person.FirstName @Model.Person.LastName
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Person.Phone)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Person.Phone)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Person.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Person.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Duration)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Duration)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Guests)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Guests)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ReservationStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ReservationStatus.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Sitting)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Sitting.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Sitting.SittingType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Sitting.SittingType.Name)
+        </dd>
+        @if (User.IsInRole("Manager"))
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ReservationOrigin)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ReservationOrigin.Name)
+            </dd>
+        }
+    </dl>
+</div>
+<div>
+    <a asp-action="Update" asp-route-id="@Model.Id">Edit</a> |
+    @if (User.IsInRole("Manager") || User.IsInRole("Employee"))
+        {
+            <a asp-action="Index">Back to List</a>
+        }
+   
+</div>

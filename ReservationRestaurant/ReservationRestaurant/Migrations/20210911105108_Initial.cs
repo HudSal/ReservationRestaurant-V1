@@ -52,11 +52,11 @@ namespace ReservationRestaurant.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,20 +95,13 @@ namespace ReservationRestaurant.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RestaurantId = table.Column<int>(type: "int", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Restaurants", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Restaurants_Restaurants_RestaurantId",
-                        column: x => x.RestaurantId,
-                        principalTable: "Restaurants",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -256,7 +249,7 @@ namespace ReservationRestaurant.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
@@ -349,12 +342,12 @@ namespace ReservationRestaurant.Migrations
                 name: "ReservationTable",
                 columns: table => new
                 {
-                    ReservationTableId = table.Column<int>(type: "int", nullable: false),
-                    ReservationsId = table.Column<int>(type: "int", nullable: false)
+                    ReservationsId = table.Column<int>(type: "int", nullable: false),
+                    TablesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ReservationTable", x => new { x.ReservationTableId, x.ReservationsId });
+                    table.PrimaryKey("PK_ReservationTable", x => new { x.ReservationsId, x.TablesId });
                     table.ForeignKey(
                         name: "FK_ReservationTable_Reservations_ReservationsId",
                         column: x => x.ReservationsId,
@@ -362,11 +355,102 @@ namespace ReservationRestaurant.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ReservationTable_Tables_ReservationTableId",
-                        column: x => x.ReservationTableId,
+                        name: "FK_ReservationTable_Tables_TablesId",
+                        column: x => x.TablesId,
                         principalTable: "Tables",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "ReservationOrigins",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Phone" },
+                    { 2, "Email" },
+                    { 3, "Online" },
+                    { 4, "In Person" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ReservationStatuses",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Pending" },
+                    { 2, "Confirmed" },
+                    { 3, "Cancelled" },
+                    { 4, "Seated" },
+                    { 5, "Complete" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Restaurants",
+                columns: new[] { "Id", "Address", "Name", "PhoneNumber" },
+                values: new object[] { 1, "69 Bean Street", "Bean Scene", "04 8888 9999" });
+
+            migrationBuilder.InsertData(
+                table: "SittingTypes",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Breakfast" },
+                    { 2, "Lunch" },
+                    { 3, "Dinner" },
+                    { 4, "Other" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Area",
+                columns: new[] { "Id", "Name", "RestaurantId" },
+                values: new object[] { 1, "Main", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Area",
+                columns: new[] { "Id", "Name", "RestaurantId" },
+                values: new object[] { 2, "Outside", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Area",
+                columns: new[] { "Id", "Name", "RestaurantId" },
+                values: new object[] { 3, "Balcony", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Tables",
+                columns: new[] { "Id", "AreaId", "Name" },
+                values: new object[,]
+                {
+                    { 1, 1, "M1" },
+                    { 28, 3, "B8" },
+                    { 27, 3, "B7" },
+                    { 26, 3, "B6" },
+                    { 25, 3, "B5" },
+                    { 24, 3, "B4" },
+                    { 23, 3, "B3" },
+                    { 22, 3, "B2" },
+                    { 21, 3, "B1" },
+                    { 20, 2, "O10" },
+                    { 19, 2, "O9" },
+                    { 18, 2, "O8" },
+                    { 17, 2, "O7" },
+                    { 16, 2, "O6" },
+                    { 15, 2, "O5" },
+                    { 14, 2, "O4" },
+                    { 13, 2, "O3" },
+                    { 12, 2, "O2" },
+                    { 11, 2, "O1" },
+                    { 10, 1, "M10" },
+                    { 9, 1, "M9" },
+                    { 8, 1, "M8" },
+                    { 7, 1, "M7" },
+                    { 6, 1, "M6" },
+                    { 5, 1, "M5" },
+                    { 4, 1, "M4" },
+                    { 3, 1, "M3" },
+                    { 2, 1, "M2" },
+                    { 29, 3, "B9" },
+                    { 30, 3, "B10" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -414,6 +498,12 @@ namespace ReservationRestaurant.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_People_Email",
+                table: "People",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Reservations_PersonId",
                 table: "Reservations",
                 column: "PersonId");
@@ -434,14 +524,9 @@ namespace ReservationRestaurant.Migrations
                 column: "SittingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReservationTable_ReservationsId",
+                name: "IX_ReservationTable_TablesId",
                 table: "ReservationTable",
-                column: "ReservationsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Restaurants_RestaurantId",
-                table: "Restaurants",
-                column: "RestaurantId");
+                column: "TablesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sittings_RestaurantId",

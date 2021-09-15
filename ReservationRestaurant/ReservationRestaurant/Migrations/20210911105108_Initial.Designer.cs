@@ -10,8 +10,8 @@ using ReservationRestaurant.Data;
 namespace ReservationRestaurant.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210909044458_DataSeeding")]
-    partial class DataSeeding
+    [Migration("20210911105108_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -256,7 +256,7 @@ namespace ReservationRestaurant.Migrations
                         new
                         {
                             Id = 3,
-                            Name = "Baclony",
+                            Name = "Balcony",
                             RestaurantId = 1
                         });
                 });
@@ -270,7 +270,7 @@ namespace ReservationRestaurant.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -288,6 +288,9 @@ namespace ReservationRestaurant.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("People");
                 });
@@ -420,6 +423,7 @@ namespace ReservationRestaurant.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -427,6 +431,7 @@ namespace ReservationRestaurant.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -437,7 +442,9 @@ namespace ReservationRestaurant.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Group F"
+                            Address = "69 Bean Street",
+                            Name = "Bean Scene",
+                            PhoneNumber = "04 8888 9999"
                         });
                 });
 
@@ -836,7 +843,7 @@ namespace ReservationRestaurant.Migrations
             modelBuilder.Entity("ReservationRestaurant.Data.Sitting", b =>
                 {
                     b.HasOne("ReservationRestaurant.Data.Restaurant", "Restaurant")
-                        .WithMany()
+                        .WithMany("Sittings")
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -891,6 +898,8 @@ namespace ReservationRestaurant.Migrations
             modelBuilder.Entity("ReservationRestaurant.Data.Restaurant", b =>
                 {
                     b.Navigation("Areas");
+
+                    b.Navigation("Sittings");
                 });
 
             modelBuilder.Entity("ReservationRestaurant.Data.Sitting", b =>

@@ -8,7 +8,7 @@ namespace ReservationRestaurant.Data
         public int Id { get; set; }
         public DateTime StartTime { get; set; }
         public int Duration { get; set; } // in miuntes
-        public DateTime EndTime { get => StartTime.AddMinutes(Guests); }
+        public DateTime EndTime { get => StartTime.AddMinutes(Duration); }
         public int Guests { get; set; }
 
 

@@ -11,7 +11,7 @@ namespace ReservationRestaurant.Data
         public string Name { get; set; }
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
-        //public List<Restaurant> Restaurants { get; set; }
+        public List<Sitting> Sittings { get; set; } = new List<Sitting>();
         public List<Area> Areas { get; set; }
 
     }

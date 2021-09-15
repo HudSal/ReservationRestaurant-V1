@@ -12,13 +12,13 @@ namespace ReservationRestaurant.Data
         public DataSeeder(ModelBuilder mb)
         {
             mb.Entity<Restaurant>()
-                .HasData(new Restaurant { Id = 1, Name = "Group F" });
+                .HasData(new Restaurant { Id = 1, Name = "Bean Scene", Address="69 Bean Street", PhoneNumber="04 8888 9999" });
 
             mb.Entity<Area>()
                 .HasData(
                 new Area { Id = 1, RestaurantId = 1, Name = "Main" },
                 new Area { Id = 2, RestaurantId = 1, Name = "Outside" },
-                new Area { Id = 3, RestaurantId = 1, Name = "Baclony" }
+                new Area { Id = 3, RestaurantId = 1, Name = "Balcony" }
                 );
             mb.Entity<Table>()
                 .HasData(
@@ -77,6 +77,13 @@ namespace ReservationRestaurant.Data
                     new SittingType { Id = 3, Name = "Dinner" },
                     new SittingType { Id = 4, Name = "Other" }
                 );
+            //mb.Entity<Sitting>()
+            //    .HasData(
+            //        new Sitting { Id = 1, Name= "Middle Eastern Breakfast", StartTime = new DateTime(DateTime.Now.Year, 01, 01, 09, 00,00), EndTime = new DateTime(DateTime.Now.Year, 01, 01, 12, 00, 00), Capacity = 30, RestaurantId = 1, SittingTypeId = 1, IsClosed=false },
+            //        new Sitting { Id = 2, Name = "Middle Eastern Lunch", StartTime = new DateTime(DateTime.Now.Year, 01, 01, 13, 00, 00), EndTime = new DateTime(DateTime.Now.Year, 01, 01, 16, 00, 00), Capacity = 30, RestaurantId = 1, SittingTypeId = 2, IsClosed = false },
+            //        new Sitting { Id = 3, Name = "Middle Eastern Dinner", StartTime = new DateTime(DateTime.Now.Year, 01, 01, 17, 00, 00), EndTime = new DateTime(DateTime.Now.Year, 01, 01, 21, 00, 00), Capacity = 30, RestaurantId = 1, SittingTypeId = 3, IsClosed = false }
+
+            //    );
         }
     }
 }

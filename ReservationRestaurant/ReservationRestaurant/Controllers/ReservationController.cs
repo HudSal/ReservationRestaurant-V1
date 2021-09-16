@@ -41,13 +41,23 @@ namespace ReservationRestaurant.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Create(Models.Reservation.Create mo )
-        {
+        {  
+         var allTimeSlots = await _context.TimeSlots.ToArrayAsync();
+            List<TimeSlot> timeSlotsOfSittingType = new List<TimeSlot>();
+            foreach (var item in allTimeSlots)
+            {
+                if (item.SittingTypeId == mo.SittingTypeId)
+                {
+                    timeSlotsOfSittingType.Add(item);
+                }
+            }
             var m = new Models.Reservation.Create // here we create reservation model instance and assign default value for the guests
             {
                 Guests = mo.Guests,
                 StartTime = mo.StartTime,
                 SittingTypeId = mo.SittingTypeId,
-                SittingId = mo.SittingId
+                SittingId = mo.SittingId,
+                TimeSL= new SelectList(timeSlotsOfSittingType,nameof(TimeSlot.Id),nameof(TimeSlot.Time))
                 //Sittings = new SelectList(_context.Sittings.ToArray(), nameof(Sitting.Id), nameof(Sitting.Name))
             };
             if (User.Identity.IsAuthenticated)// if the user has loged in
@@ -103,12 +113,18 @@ namespace ReservationRestaurant.Controllers
                     };
                     person = await _personService.UpsertPersonAsync(person, false);
                 }
+                 string selectedDate = m.StartTime; //selectedDate as astring
+                var selectedTimeSlot = await _context.TimeSlots.FirstOrDefaultAsync(t => t.Id == m.TimeSlotID);
+                string selectedTime = selectedTimeSlot.Time;//get the time portion of the timeslot - still a string at this stage
+                string cobineDateTime = selectedDate + " " + selectedTime;// concat the date and time
+                DateTime finalDateTime = DateTime.Parse(cobineDateTime); // convert it to DateTime object
+                
                 //create new reservation and assign the person id
                 reservation = new Reservation
                 {
                     PersonId = person.Id,
                     Guests = m.Guests,
-                    StartTime = m.StartTime,
+                    StartTime = finalDateTime,
                     Duration = m.Duration,
                     ReservationStatusId = m.ReservationStatusId,
                     ReservationOriginId = m.ReservationOriginId,

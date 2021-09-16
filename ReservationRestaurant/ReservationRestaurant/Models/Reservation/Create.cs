@@ -22,7 +22,7 @@ namespace ReservationRestaurant.Models.Reservation
         [Required(ErrorMessage = "Person - PhoneNumber: Required")]
         public string PhoneNumber { get; set; }
         public int PersonId { get; set; }
-        public string SpecialRequierment { get; set; } = "";
+        public string SpecialRequirement { get; set; } = "";
         [Display(Name = "Duration Time in minutes")]
         public int Duration { get; set; } = 90;
         [Display(Name = "Sitting Name")]
@@ -35,6 +35,8 @@ namespace ReservationRestaurant.Models.Reservation
         public SelectList TimeSL { get; set; }
         public int TimeSlotID { get; set; }
         public TimeSlot TimeSlot { get; set; }
+        
 
     }
 }
+e

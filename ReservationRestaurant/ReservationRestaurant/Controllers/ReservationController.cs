@@ -239,7 +239,7 @@ namespace ReservationRestaurant.Controllers
             }
             var create = new Models.Reservation.Create()
             {
-                StartTime = dateSelected,
+                StartTime = preCreate.StartTime,
                 Guests = preCreate.Guests,
                 SittingTypeId = preCreate.SittingTypeId,
                 SittingId=selectedSitting.Id,

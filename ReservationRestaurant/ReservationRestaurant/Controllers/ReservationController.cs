@@ -205,7 +205,7 @@ namespace ReservationRestaurant.Controllers
             DateTime dateSelected = DateTime.Parse(preCreate.StartTime);
 
 
-            var allSitting = await _context.Sittings.Include(x => x.SittingType).ToListAsync();  //first get a list of all the available sittings
+            var allSitting = await _context.Sittings.Include(x => x.SittingType).Include(x=>x.Reservations).ToListAsync();  //first get a list of all the available sittings
 
             //this returns particular sitting that the customer had chosen, based on the date and sittingType (bfast,lunch, etc)
             var selectedSitting = allSitting.FirstOrDefault(x => x.StartTime.Day == dateSelected.Day && x.SittingTypeId == preCreate.SittingTypeId);

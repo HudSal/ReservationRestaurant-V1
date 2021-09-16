@@ -9,6 +9,10 @@
 <form asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+    <h4>Booking for:</h4>
+    <h6>@Model.StartTime</h6>
+    
+    
     @if (Model.PersonId > 0)
     {
         <div>@Model.FirstName @Model.LastName</div>

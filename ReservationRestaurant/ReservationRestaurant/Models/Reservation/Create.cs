@@ -11,7 +11,7 @@ namespace ReservationRestaurant.Models.Reservation
 {
     public class Create
     {
-        public DateTime StartTime { get; set; }/* = DateTime.Now;*/
+        public String StartTime { get; set; }/* = DateTime.Now;*/
         public int Guests { get; set; } = 2;// default value = 2
         [Required(ErrorMessage = "Person - FirstName: Required")]
         public string FirstName { get; set; }
@@ -28,13 +28,13 @@ namespace ReservationRestaurant.Models.Reservation
         [Display(Name = "Sitting Name")]
         [Required(ErrorMessage = "Rservation - Sitting Type: Required")]
         public int SittingId { get; set; }
-        //public SelectList Sittings { get; set; }
-        [DefaultValue(3)]// id=3 --> Online
-        public int ReservationOriginId { get; set; } = 3;
-        [DefaultValue(1)]// id=1 --> Pending
-        public int ReservationStatusId { get; set; } = 1;
+        public int ReservationOriginId { get; set; } = 3;// id=3 --> Online
+        public int ReservationStatusId { get; set; } = 1;// id=1 --> Pending
         public int SittingTypeId { get; set; }
         public SittingType SittingType { get; set; }
+        public SelectList TimeSL { get; set; }
+        public int TimeSlotID { get; set; }
+        public TimeSlot TimeSlot { get; set; }
 
     }
 }

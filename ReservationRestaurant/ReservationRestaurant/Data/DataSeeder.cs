@@ -77,6 +77,48 @@ namespace ReservationRestaurant.Data
                     new SittingType { Id = 3, Name = "Dinner" },
                     new SittingType { Id = 4, Name = "Other" }
                 );
+            
+            mb.Entity<TimeSlot>()
+                .HasData(
+                    new TimeSlot { Id = 1, Time = "07:00 AM", SittingTypeId=1 },
+                    new TimeSlot { Id = 2, Time = "07:15 AM", SittingTypeId = 1 },
+                    new TimeSlot { Id = 3, Time = "07:30 AM", SittingTypeId = 1 },
+                    new TimeSlot { Id = 4, Time = "07:45 AM", SittingTypeId = 1 },
+                    new TimeSlot { Id = 5, Time = "08:00 AM", SittingTypeId = 1 },
+                    new TimeSlot { Id = 6, Time = "08:15 AM", SittingTypeId = 1 },
+                    new TimeSlot { Id = 7, Time = "08:30 AM", SittingTypeId = 1 },
+                    new TimeSlot { Id = 8, Time = "08:45 AM", SittingTypeId = 1 },
+                    new TimeSlot { Id = 9, Time = "09:00 AM", SittingTypeId = 1 },
+                    new TimeSlot { Id = 10, Time = "09:15 AM", SittingTypeId = 1 },
+                    new TimeSlot { Id = 11, Time = "09:30 AM", SittingTypeId = 1 },
+                    new TimeSlot { Id = 12, Time = "09:45 AM", SittingTypeId = 1 },
+                    new TimeSlot { Id = 13, Time = "10:00 AM", SittingTypeId = 1 },
+                    new TimeSlot { Id = 14, Time = "12:00 PM", SittingTypeId = 2 },
+                    new TimeSlot { Id = 15, Time = "12:15 PM", SittingTypeId = 2 },
+                    new TimeSlot { Id = 16, Time = "12:30 PM", SittingTypeId = 2 },
+                    new TimeSlot { Id = 17, Time = "12:45 PM", SittingTypeId = 2 },
+                    new TimeSlot { Id = 18, Time = "1:00 PM", SittingTypeId = 2 },
+                    new TimeSlot { Id = 19, Time = "1:15 PM", SittingTypeId = 2 },
+                    new TimeSlot { Id = 20, Time = "1:30 PM", SittingTypeId = 2 },
+                    new TimeSlot { Id = 21, Time = "1:45 PM", SittingTypeId = 2 },
+                    new TimeSlot { Id = 22, Time = "2:00 PM", SittingTypeId = 2 },
+                    new TimeSlot { Id = 23, Time = "2:15 PM", SittingTypeId = 2 },
+                    new TimeSlot { Id = 24, Time = "2:30 PM", SittingTypeId = 2 },
+                    new TimeSlot { Id = 25, Time = "5:30 PM", SittingTypeId = 3 },
+                    new TimeSlot { Id = 26, Time = "5:45 PM", SittingTypeId = 3 },
+                    new TimeSlot { Id = 27, Time = "6:00 PM", SittingTypeId = 3 },
+                    new TimeSlot { Id = 28, Time = "6:15 PM", SittingTypeId = 3 },
+                    new TimeSlot { Id = 29, Time = "6:30 PM", SittingTypeId = 3 },
+                    new TimeSlot { Id = 30, Time = "6:45 PM", SittingTypeId = 3 },
+                    new TimeSlot { Id = 31, Time = "7:00 PM", SittingTypeId = 3 },
+                    new TimeSlot { Id = 32, Time = "7:15 PM", SittingTypeId = 3 },
+                    new TimeSlot { Id = 33, Time = "7:30 PM", SittingTypeId = 3 },
+                    new TimeSlot { Id = 34, Time = "7:45 PM", SittingTypeId = 3 },
+                    new TimeSlot { Id = 35, Time = "8:00 PM", SittingTypeId = 3 },
+                    new TimeSlot { Id = 36, Time = "8:15 PM", SittingTypeId = 3 },
+                    new TimeSlot { Id = 37, Time = "8:30 PM", SittingTypeId = 3 }    
+                );
+            
             //mb.Entity<Sitting>()
             //    .HasData(
             //        new Sitting { Id = 1, Name= "Middle Eastern Breakfast", StartTime = new DateTime(DateTime.Now.Year, 01, 01, 09, 00,00), EndTime = new DateTime(DateTime.Now.Year, 01, 01, 12, 00, 00), Capacity = 30, RestaurantId = 1, SittingTypeId = 1, IsClosed=false },

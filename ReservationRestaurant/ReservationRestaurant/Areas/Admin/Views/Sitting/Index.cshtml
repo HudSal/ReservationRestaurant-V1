@@ -28,6 +28,9 @@
                 @Html.DisplayNameFor(model => model.Capacity)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Vacancies) // newly added
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Restaurant)
             </th>
             <th>
@@ -56,6 +59,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Capacity)
+            </td>
+             <td>
+                @Html.DisplayFor(modelItem => item.Vacancies)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Restaurant.Name)

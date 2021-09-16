@@ -228,7 +228,7 @@ namespace ReservationRestaurant.Controllers
             if (selectedSitting == null)
             {
                 preCreate.SittingTypeSL = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name));
-                preCreate.Message = "The selected day has no particular sittings";
+                preCreate.Message = "The selected day doesn't have that particular sittings";
                 return View(preCreate);
             }
             if (selectedSitting.IsClosed == true || selectedSitting.Vacancies < preCreate.Guests)
@@ -273,6 +273,7 @@ namespace ReservationRestaurant.Controllers
             m.ReservationStatuses = new SelectList(_context.ReservationStatuses.ToArray(), nameof(ReservationStatus.Id), nameof(ReservationStatus.Name), m.ReservationStatusId);
             m.ReservationOrigins = new SelectList(_context.ReservationOrigins.ToArray(), nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name), m.ReservationOriginId);
             m.Sittings = new SelectList(_context.Sittings.ToArray(), nameof(Sitting.Id), nameof(Sitting.Name), m.SittingId);
+            m.SpecialRequirement = reservation.SpecialRequirement;
             return View(m);
         }
 

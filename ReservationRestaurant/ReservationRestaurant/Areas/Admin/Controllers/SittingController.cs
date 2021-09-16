@@ -21,9 +21,33 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
             _mapper = new Mapper(config);
         }
     
-        public IActionResult Index()
+        public IActionResult Index(string sortOrder)
         {
             var listOfSittings = _context.Sittings.Include(x => x.SittingType).Include(x => x.Restaurant).ToList();
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name" : "";
+            ViewBag.DateSortParm = String.IsNullOrEmpty(sortOrder) ? "Date" : "";
+            ViewBag.TypeSortParm = String.IsNullOrEmpty(sortOrder) ? "Sitting" : "";
+            ViewBag.BoolSortParm = String.IsNullOrEmpty(sortOrder) ? "Bool" : "";
+
+            switch (sortOrder)
+            {
+                case "Name":
+                    listOfSittings = listOfSittings.OrderBy(s => s.Name).ToList();
+                    break;
+                case "Date":
+                    listOfSittings = listOfSittings.OrderBy(s => s.StartTime).ToList();
+                    break;
+                case "Sitting":
+                    listOfSittings = listOfSittings.OrderBy(s => s.SittingTypeId).ToList();
+                    break;
+                case "Bool":
+                    listOfSittings = listOfSittings.OrderBy(s => s.IsClosed).ToList();
+                    break;
+                default:
+                    listOfSittings = listOfSittings.OrderBy(s => s.StartTime).ToList();
+                    break;
+            }
+            
             return View(listOfSittings);
 
         }

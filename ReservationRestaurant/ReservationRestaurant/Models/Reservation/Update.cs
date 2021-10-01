@@ -12,12 +12,12 @@ namespace ReservationRestaurant.Models.Reservation
     {
         [Required]
         public int Id { get; set; }
-        public int TableId { get; set; }
-        public SelectList Tables { get; set; }
-        //public int SittingTypeSLId { get; set; }
-        public SelectList SittingTypes { get; set; }
+        public List<int> SelectedTablesIds { get; set; } = new List<int>();  //the ID's of the selected Tables or int[] 
+        public List<SelectListItem> Tables { get; set; } = new List<SelectListItem>();
+        public List<Table> ExistingTables { get; set; } = new List<Table>();
         public SelectList ReservationStatuses { get; set; }
         public SelectList ReservationOrigins { get; set; }
-        public SelectList Sittings { get; set; }
+        public Sitting Sitting { get; set; }
+        public DateTime ReservationStartDateTime { get; set; }
     }
 }

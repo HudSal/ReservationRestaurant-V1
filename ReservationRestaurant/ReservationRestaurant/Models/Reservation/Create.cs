@@ -11,7 +11,7 @@ namespace ReservationRestaurant.Models.Reservation
 {
     public class Create
     {
-        public String StartTime { get; set; }/* = DateTime.Now;*/
+        public String StartTime { get; set; }
         public int Guests { get; set; } = 2;// default value = 2
         [Required(ErrorMessage = "Person - FirstName: Required")]
         public string FirstName { get; set; }
@@ -22,7 +22,7 @@ namespace ReservationRestaurant.Models.Reservation
         [Required(ErrorMessage = "Person - PhoneNumber: Required")]
         public string PhoneNumber { get; set; }
         public int PersonId { get; set; }
-        public string SpecialRequirement { get; set; } = "";
+        public string SpecialRequirement { get; set; } = "None";
         [Display(Name = "Duration Time in minutes")]
         public int Duration { get; set; } = 90;
         [Display(Name = "Sitting Name")]

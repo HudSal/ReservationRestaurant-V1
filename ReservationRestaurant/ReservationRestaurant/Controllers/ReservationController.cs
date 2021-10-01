@@ -140,12 +140,13 @@ namespace ReservationRestaurant.Controllers
                 var myerrors = ModelState.SelectMany(x => x.Value.Errors.Select(z => z.Exception));
 
                 // Breakpoint, Log or examine the list with Exceptions.
-
-            }
-            var errors = ModelState
+                  var errors = ModelState
                         .Where(x => x.Value.Errors.Count > 0)
                         .Select(x => new { x.Key, x.Value.Errors })
                         .ToArray();
+
+            }
+          
             return RedirectToAction(nameof(Details), new { reservation.Id });
         }
 
@@ -248,7 +249,8 @@ namespace ReservationRestaurant.Controllers
 
             return RedirectToAction(nameof(Create), create);
         }
-
+        
+        [Authorize(Roles = "Employee,Manager")]
         [HttpGet]
         public async Task<IActionResult> Update(int? id)
         {
@@ -267,16 +269,49 @@ namespace ReservationRestaurant.Controllers
             {
                 return NotFound();
             }
-            var m = _mapper.Map<Models.Reservation.Update>(reservation);
-            m.Tables = new SelectList(_context.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name), m.TableId);
-            m.SittingTypes = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name),m.SittingTypeId);
+            var startDate = reservation.StartTime.ToString("dd/MM/yyyy");// to get the reservation date only as string
+            var startTime= reservation.StartTime.ToString("h:mm tt");// to get the reservation Time only as string
+            var selectedTimeDB = await _context.TimeSlots.FirstOrDefaultAsync(t => t.Time == startTime);
+            var m = new Models.Reservation.Update // here we  create update reservation model instance
+            {
+                Id= reservation.Id,
+                PersonId= reservation.PersonId,
+                FirstName = reservation.Person.FirstName,
+                LastName = reservation.Person.LastName,
+                Email = reservation.Person.Email,
+                PhoneNumber = reservation.Person.Phone,
+                StartTime = startDate,
+                TimeSlot= selectedTimeDB,
+                Guests = reservation.Guests,
+                SpecialRequierment = reservation.SpecialRequierment,
+                Duration = reservation.Duration,
+                ReservationStatusId = reservation.ReservationStatusId,
+                ReservationOriginId = reservation.ReservationOriginId,
+                SittingTypeId = reservation.Sitting.SittingTypeId,
+                SittingType=reservation.Sitting.SittingType,
+                SittingId = reservation.SittingId,
+                Sitting=reservation.Sitting,
+                ExistingTables = reservation.Tables,
+                ReservationStartDateTime=reservation.StartTime
+            };
+             var allTables = await _context.Tables.ToListAsync();
+            foreach (var table in allTables)
+            {
+                SelectListItem selectListItem = new SelectListItem()
+                {
+                    Text =table.Name,
+                    Value = table.Id.ToString(),
+                };
+                m.Tables.Add(selectListItem);
+            }
+            
+            //var m = _mapper.Map<Models.Reservation.Update>(reservation);
             m.ReservationStatuses = new SelectList(_context.ReservationStatuses.ToArray(), nameof(ReservationStatus.Id), nameof(ReservationStatus.Name), m.ReservationStatusId);
             m.ReservationOrigins = new SelectList(_context.ReservationOrigins.ToArray(), nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name), m.ReservationOriginId);
-            m.Sittings = new SelectList(_context.Sittings.ToArray(), nameof(Sitting.Id), nameof(Sitting.Name), m.SittingId);
-            m.SpecialRequirement = reservation.SpecialRequirement;
             return View(m);
         }
 
+        [Authorize(Roles = "Manager,Employee")]
         [HttpPost]
         public async Task<IActionResult> Update(int id, Models.Reservation.Update m)
         {
@@ -288,22 +323,82 @@ namespace ReservationRestaurant.Controllers
             {
                 try
                 {
-                    var r = _mapper.Map<Data.Reservation>(m);
-                    _context.Update<Reservation>(r);
+                    
+                    List<int> result = m.SelectedTablesIds;//here you could get the selected Tables Id's
+                    List<Table> selectedTables = new List<Table>();
+                    foreach (var tId in result)
+                    {
+                        var tableSelcted = await _context.Tables.FirstOrDefaultAsync(t => t.Id == tId);
+                        selectedTables.Add(tableSelcted);
+                    }
+                    var reservation = await _context.Reservations.Include(r => r.Person)
+                                                        .Include(r => r.Sitting)
+                                                        .Include(r => r.ReservationStatus)
+                                                        .Include(r => r.ReservationOrigin)
+                                                        .Include(r => r.Tables)
+                                                        .FirstOrDefaultAsync(r => r.Id == id);
+                    if (reservation.Tables.Count != 0)
+                    {
+                        reservation.Tables.Clear();
+                        _context.Reservations.Update(reservation);
+                        await _context.SaveChangesAsync();
+                    }
+                    reservation.Id = m.Id;
+                    reservation.PersonId = m.PersonId;
+                    reservation.Guests = m.Guests;
+                    reservation.StartTime = m.ReservationStartDateTime;
+                    reservation.Duration = m.Duration;
+                    reservation.ReservationStatusId = m.ReservationStatusId;
+                    reservation.ReservationOriginId = m.ReservationOriginId;
+                    reservation.SittingId = m.SittingId;
+                    reservation.SpecialRequierment = m.SpecialRequierment;
+                    reservation.Tables.AddRange(selectedTables);
+                    _context.Reservations.Update(reservation);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Details));
+                    return RedirectToAction(nameof(Details), new { reservation.Id });
                 }
+           
                 catch (Exception ex)
                 {
                     //log the exception
 
                 }
             }
-            m.Tables = new SelectList(_context.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name), m.TableId);
-            m.SittingTypes = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name), m.SittingTypeId);
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState
+                  .Where(x => x.Value.Errors.Count > 0)
+                  .Select(x => new { x.Key, x.Value.Errors })
+                  .ToArray();
+            }
+            var allTables = await _context.Tables.ToListAsync();
+            foreach (var table in allTables)
+            {
+                foreach (var tId in m.SelectedTablesIds)
+                {
+                    if(tId == table.Id)
+                    {
+                        SelectListItem selectListItem = new SelectListItem()
+                        {
+                            Text = table.Name,
+                            Value = table.Id.ToString(),
+                            Selected = true //for test, here all the item will be selected
+                        };
+                        m.Tables.Add(selectListItem);
+                    }
+                    else
+                    {
+                        SelectListItem selectListItem = new SelectListItem()
+                        {
+                            Text = table.Name,
+                            Value = table.Id.ToString()
+                        };
+                        m.Tables.Add(selectListItem);
+                    }
+                }
+            }
             m.ReservationStatuses = new SelectList(_context.ReservationStatuses.ToArray(), nameof(ReservationStatus.Id), nameof(ReservationStatus.Name), m.ReservationStatusId);
             m.ReservationOrigins = new SelectList(_context.ReservationOrigins.ToArray(), nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name), m.ReservationOriginId);
-            m.Sittings = new SelectList(_context.Sittings.ToArray(), nameof(Sitting.Id), nameof(Sitting.Name), m.SittingId);
             return View(m);
         }
 

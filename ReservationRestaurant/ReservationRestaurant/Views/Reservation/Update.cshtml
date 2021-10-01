@@ -73,6 +73,35 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+@section Styles{
+    <link href="~/css/chosen.css" rel="stylesheet" />
+    @*<link href="~/css/prism.css" rel="stylesheet" />*@
+    @*<link href="~/css/style.css" rel="stylesheet" />*@
+    <style>
+        .select,
+        .chosen-select,
+        .chosen-select-no-single,
+        .chosen-select-no-results,
+        .chosen-select-deselect,
+        .chosen-select-rtl,
+        .chosen-select-width {
+            width: 350px;
+        }
+    </style>
+
+}
+
 @section Scripts {
+    <script src="~/js/chosen.jquery.js"></script>
+    <script src="~/js/init.js"></script>
+    <script src="~/js/prism.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("select").chosen();
+            $("chosen-select-width").chosen();
+
+        });
+    </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+

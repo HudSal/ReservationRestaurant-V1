@@ -128,7 +128,8 @@ namespace ReservationRestaurant.Controllers
                     Duration = m.Duration,
                     ReservationStatusId = m.ReservationStatusId,
                     ReservationOriginId = m.ReservationOriginId,
-                    SittingId=m.SittingId
+                    SittingId=m.SittingId,
+                    SpecialRequierment=m.SpecialRequierment
                 };
                 _context.Reservations.Add(reservation);
                 await _context.SaveChangesAsync();

@@ -129,7 +129,7 @@ namespace ReservationRestaurant.Controllers
                     ReservationStatusId = m.ReservationStatusId,
                     ReservationOriginId = m.ReservationOriginId,
                     SittingId=m.SittingId,
-                    SpecialRequierment=m.SpecialRequierment
+                    SpecialRequirement=m.SpecialRequirement
                 };
                 _context.Reservations.Add(reservation);
                 await _context.SaveChangesAsync();

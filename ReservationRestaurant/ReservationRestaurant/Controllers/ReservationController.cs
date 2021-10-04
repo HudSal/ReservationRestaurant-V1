@@ -284,7 +284,7 @@ namespace ReservationRestaurant.Controllers
                 StartTime = startDate,
                 TimeSlot= selectedTimeDB,
                 Guests = reservation.Guests,
-                SpecialRequierment = reservation.SpecialRequierment,
+                SpecialRequirement = reservation.SpecialRequirement,
                 Duration = reservation.Duration,
                 ReservationStatusId = reservation.ReservationStatusId,
                 ReservationOriginId = reservation.ReservationOriginId,
@@ -352,7 +352,7 @@ namespace ReservationRestaurant.Controllers
                     reservation.ReservationStatusId = m.ReservationStatusId;
                     reservation.ReservationOriginId = m.ReservationOriginId;
                     reservation.SittingId = m.SittingId;
-                    reservation.SpecialRequierment = m.SpecialRequierment;
+                    reservation.SpecialRequirement = m.SpecialRequirement;
                     reservation.Tables.AddRange(selectedTables);
                     _context.Reservations.Update(reservation);
                     await _context.SaveChangesAsync();

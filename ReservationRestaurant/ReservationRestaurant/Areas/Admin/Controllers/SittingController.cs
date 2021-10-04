@@ -24,10 +24,10 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
         public IActionResult Index(string sortOrder)
         {
             var listOfSittings = _context.Sittings.Include(x => x.SittingType).Include(x => x.Restaurant).ToList();
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name" : "";
-            ViewBag.DateSortParm = String.IsNullOrEmpty(sortOrder) ? "Date" : "";
-            ViewBag.TypeSortParm = String.IsNullOrEmpty(sortOrder) ? "Sitting" : "";
-            ViewBag.BoolSortParm = String.IsNullOrEmpty(sortOrder) ? "Bool" : "";
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name" : "Name";
+            ViewBag.DateSortParm = String.IsNullOrEmpty(sortOrder) ? "Date" : "Date";
+            ViewBag.TypeSortParm = String.IsNullOrEmpty(sortOrder) ? "Sitting" : "Sitting";
+            ViewBag.BoolSortParm = String.IsNullOrEmpty(sortOrder) ? "Bool" : "Bool";
 
             switch (sortOrder)
             {

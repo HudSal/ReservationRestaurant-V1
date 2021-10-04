@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ReservationRestaurant.Data.Person>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+<div>
+    <a asp-action="Create" asp-route-id="">Create New </a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+@foreach (var item in Model)
+{
+
+
+    <div>
+        <h4>Details</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.UserId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(modelItem => item.UserId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.FirstName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LastName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(modelItem => item.LastName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(modelItem => item.Email)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Phone)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(modelItem => item.Phone)
+            </dd>
+            
+
+        </dl>
+    </div>
+    <div>
+        <a asp-action="Update" asp-route-id="@item.Id">Edit</a>
+        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+        <a asp-action="UpdateRoleToManager" asp-route-id="@item.Id">Give Manager Access</a>
+        <a asp-action="RemoveManagerRole" asp-route-id="@item.Id">Remove Manager Access</a>
+    </div>
+}

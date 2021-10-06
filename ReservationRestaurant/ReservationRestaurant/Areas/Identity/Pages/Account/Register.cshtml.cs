@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using ReservationRestaurant.Data;
+using ReservationRestaurant.Service;
 
 namespace ReservationRestaurant.Areas.Identity.Pages.Account
 {
@@ -25,13 +26,15 @@ namespace ReservationRestaurant.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly ApplicationDbContext _context;
+        private readonly PersonService _personService;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            PersonService personService)
 
         {
             _userManager = userManager;
@@ -39,6 +42,7 @@ namespace ReservationRestaurant.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _context = context;
+            _personService = personService;
         }
 
         [BindProperty]
@@ -110,8 +114,9 @@ namespace ReservationRestaurant.Areas.Identity.Pages.Account
                         Phone = Input.Phone,
                         UserId = user.Id
                     };
-                    _context.People.Add(p);
-                    await _context.SaveChangesAsync();
+                    await _personService.UpsertPersonAsync(p, true);//-------new
+                    //_context.People.Add(p);
+                    //await _context.SaveChangesAsync();
 
                     _logger.LogInformation("User created a new account with password.");
                     await _signInManager.SignInAsync(user, isPersistent: false);

@@ -19,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserId)
+               Is a Member
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Email)
@@ -40,7 +40,11 @@
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UserId)
+                 @if(item.UserId == null)
+                     {
+                        <div>No</div>
+                     }
+                  else { <div>Yes</div>}
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Email)

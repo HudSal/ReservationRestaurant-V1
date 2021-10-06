@@ -38,161 +38,7 @@ namespace ReservationRestaurant.Controllers
                                                        .OrderBy(r => r.Id).ToArrayAsync();
             return View(reservation);
         }
-
-        [HttpGet]
-        public async Task<IActionResult> Create(Models.Reservation.Create mo )
-        {  
-         var allTimeSlots = await _context.TimeSlots.ToArrayAsync();
-            List<TimeSlot> timeSlotsOfSittingType = new List<TimeSlot>();
-            foreach (var item in allTimeSlots)
-            {
-                if (item.SittingTypeId == mo.SittingTypeId)
-                {
-                    timeSlotsOfSittingType.Add(item);
-                }
-            }
-            var m = new Models.Reservation.Create // here we create reservation model instance and assign default value for the guests
-            {
-                Guests = mo.Guests,
-                StartTime = mo.StartTime,
-                SittingTypeId = mo.SittingTypeId,
-                SittingId = mo.SittingId,
-                TimeSL= new SelectList(timeSlotsOfSittingType,nameof(TimeSlot.Id),nameof(TimeSlot.Time))
-                //Sittings = new SelectList(_context.Sittings.ToArray(), nameof(Sitting.Id), nameof(Sitting.Name))
-            };
-            if (User.Identity.IsAuthenticated)// if the user has loged in
-            {
-                var user = await _userManager.FindByNameAsync(User.Identity.Name);
-                var person = await _context.People.FirstOrDefaultAsync(p => p.UserId == user.Id);
-                if(person != null)
-                {
-                    m.PersonId = person.Id;// here we add rest of reservation model instance property to pass it to the view 
-                    m.Email = person.Email;
-                    m.FirstName = person.FirstName;
-                    m.LastName = person.LastName;
-                    m.PhoneNumber = person.Phone;
-                }
-            }
-            return View(m);
-        }
-
-       
-        [HttpPost]
-        [ActionName("Create")]                                                  
-        public async Task<IActionResult> CreateForm(Models.Reservation.Create m)
-        {
-            Person person = null;
-            Reservation reservation = null;
-            if (User.Identity.IsAuthenticated)// if the user has loged in and he is exist
-            {
-                var user = await _userManager.FindByNameAsync(User.Identity.Name);
-                person = await _context.People.FirstOrDefaultAsync(p => p.UserId == user.Id);
-                ModelState.Remove("Email");// we remove these from the model to avoid the
-                                           // errors when the user is exist the view page will show just the name and email as <p>
-                                           // and just the guest will be as <input>, otherwise the inputs for email,forename,surname will be NULL and the Model will be Invalid
-                                           // so we remove this condition from if condition"ModelState.IsValid)" 
-                ModelState.Remove("FirstName");
-                ModelState.Remove("LastName");
-                ModelState.Remove("PhoneNumber");
-            }
-            person = await _context.People.FirstOrDefaultAsync(p => p.Email == m.Email);
-            //if(person !=null && person.UserId == null)
-            //{
-            //    // add code advise they must log in // to avoid make a reservation from the same email with different forename
-            //}
-            if (ModelState.IsValid)
-            {
-                if (person == null)
-                {
-                    person = new Person
-                    {
-                        Email = m.Email,
-                        FirstName = m.FirstName,
-                        LastName = m.LastName,
-                        Phone=m.PhoneNumber
-                    };
-                    person = await _personService.UpsertPersonAsync(person, false);
-                }
-                 string selectedDate = m.StartTime; //selectedDate as astring
-                var selectedTimeSlot = await _context.TimeSlots.FirstOrDefaultAsync(t => t.Id == m.TimeSlotID);
-                string selectedTime = selectedTimeSlot.Time;//get the time portion of the timeslot - still a string at this stage
-                string cobineDateTime = selectedDate + " " + selectedTime;// concat the date and time
-                DateTime finalDateTime = DateTime.Parse(cobineDateTime); // convert it to DateTime object
-                
-                //create new reservation and assign the person id
-                reservation = new Reservation
-                {
-                    PersonId = person.Id,
-                    Guests = m.Guests,
-                    StartTime = finalDateTime,
-                    Duration = m.Duration,
-                    ReservationStatusId = m.ReservationStatusId,
-                    ReservationOriginId = m.ReservationOriginId,
-                    SittingId=m.SittingId,
-                    SpecialRequirement=m.SpecialRequirement
-                };
-                _context.Reservations.Add(reservation);
-                await _context.SaveChangesAsync();
-                // we can put here the RedirectToAction Details is better and out of if condition when the form is Unvalid return Error Page
-                //return RedirectToAction(nameof(Details), new { reservation.Id });
-            }
-            if (!ModelState.IsValid)
-            {
-                var myerrors = ModelState.SelectMany(x => x.Value.Errors.Select(z => z.Exception));
-
-                // Breakpoint, Log or examine the list with Exceptions.
-                  var errors = ModelState
-                        .Where(x => x.Value.Errors.Count > 0)
-                        .Select(x => new { x.Key, x.Value.Errors })
-                        .ToArray();
-
-            }
-          
-            return RedirectToAction(nameof(Details), new { reservation.Id });
-        }
-
-                                                  
-        public async Task<ActionResult> Details(int? id)
-        {
-
-            try
-            {
-                if (!id.HasValue)
-                {
-                    return StatusCode(400, "Id required");
-                }
-                var reservation = await _context.Reservations.Include(r => r.Person)
-                                                              .Include(r => r.Sitting)
-                                                              .ThenInclude(s => s.SittingType)
-                                                              .Include(r => r.ReservationStatus)
-                                                              .Include(r => r.ReservationOrigin)
-                                                              .FirstOrDefaultAsync(r => r.Id == id.Value);
-                if (reservation == null)
-                {
-                    return NotFound();
-                }
-                return View(reservation);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500);
-            }
-        }
-
-
-        ////To display All the reservation history for the user who reserve using the same email
-        [Authorize(Roles = "Member")]
-        public async Task<ActionResult> History()
-        {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            var person = await _context.People.FirstOrDefaultAsync(p => p.UserId == user.Id);
-            var reservations = await _context.Reservations.Include(r => r.Person).Where(r => r.PersonId == person.Id)
-                                                          .Include(r => r.Sitting)
-                                                          .Include(r => r.ReservationStatus).ToListAsync();
-            return View(reservations);
-        }
-
-
+        
         [HttpGet]
         public async Task<IActionResult> PreCreate()
         {
@@ -250,6 +96,163 @@ namespace ReservationRestaurant.Controllers
 
             return RedirectToAction(nameof(Create), create);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Create(Models.Reservation.Create mo )
+        {  
+         var allTimeSlots = await _context.TimeSlots.ToArrayAsync();
+            List<TimeSlot> timeSlotsOfSittingType = new List<TimeSlot>();
+            foreach (var item in allTimeSlots)
+            {
+                if (item.SittingTypeId == mo.SittingTypeId)
+                {
+                    timeSlotsOfSittingType.Add(item);
+                }
+            }
+            var m = new Models.Reservation.Create // here we create reservation model instance and assign default value for the guests
+            {
+                Guests = mo.Guests,
+                StartTime = mo.StartTime,
+                SittingTypeId = mo.SittingTypeId,
+                SittingId = mo.SittingId,
+                TimeSL= new SelectList(timeSlotsOfSittingType,nameof(TimeSlot.Id),nameof(TimeSlot.Time))
+                //Sittings = new SelectList(_context.Sittings.ToArray(), nameof(Sitting.Id), nameof(Sitting.Name))
+            };
+            if (User.Identity.IsAuthenticated)// if the user has loged in
+            {
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                var person = await _context.People.FirstOrDefaultAsync(p => p.UserId == user.Id);
+                if(person != null)
+                {
+                    m.PersonId = person.Id;// here we add rest of reservation model instance property to pass it to the view 
+                    m.Email = person.Email;
+                    m.FirstName = person.FirstName;
+                    m.LastName = person.LastName;
+                    m.PhoneNumber = person.Phone;
+                }
+            }
+            return View(m);
+        }
+       
+        [HttpPost]
+        [ActionName("Create")]                                                  
+        public async Task<IActionResult> CreateForm(Models.Reservation.Create m)
+        {
+            Reservation reservation = null;
+            var person = await _context.People.FirstOrDefaultAsync(p => p.Email == m.Email);
+            //if(person !=null && person.UserId == null)
+            //{
+            //    // add code advise they must log in // to avoid make a reservation from the same email with different forename
+            //}
+            if (ModelState.IsValid)
+            {
+                if (person == null)
+                {
+                    person = new Person
+                    {
+                        Email = m.Email,
+                        FirstName = m.FirstName,
+                        LastName = m.LastName,
+                        Phone=m.PhoneNumber
+                    };
+                    person = await _personService.UpsertPersonAsync(person, false);
+                }
+                string selectedDate = m.StartTime; //selectedDate as astring
+                var selectedTimeSlot = await _context.TimeSlots.FirstOrDefaultAsync(t => t.Id == m.TimeSlotID);
+                string selectedTime = selectedTimeSlot.Time;//get the time portion of the timeslot - still a string at this stage
+                string cobineDateTime = selectedDate + " " + selectedTime;// concat the date and time
+                DateTime finalDateTime = DateTime.Parse(cobineDateTime); // convert it to DateTime object
+                
+                //create new reservation and assign the person id
+                reservation = new Reservation
+                {
+                    PersonId = person.Id,
+                    Guests = m.Guests,
+                    StartTime = finalDateTime,
+                    Duration = m.Duration,
+                    ReservationStatusId = m.ReservationStatusId,
+                    ReservationOriginId = m.ReservationOriginId,
+                    SittingId=m.SittingId,
+                    SpecialRequirement=m.SpecialRequirement
+                };
+                _context.Reservations.Add(reservation);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Details), new { reservation.Id });
+            }
+            if (!ModelState.IsValid)
+            {
+                var myerrors = ModelState.SelectMany(x => x.Value.Errors.Select(z => z.Exception));
+                // Breakpoint, Log or examine the list with Exceptions.
+                var errors = ModelState
+                        .Where(x => x.Value.Errors.Count > 0)
+                        .Select(x => new { x.Key, x.Value.Errors })
+                        .ToArray();
+            } 
+            return View(m);
+        }
+
+                                                  
+        public async Task<ActionResult> Details(int? id)
+        {
+            try
+            {
+                if (!id.HasValue)
+                {
+                    return StatusCode(400, "Id required");
+                }
+                var reservation = await _context.Reservations.Include(r => r.Person)
+                                                              .Include(r => r.Sitting)
+                                                              .ThenInclude(s => s.SittingType)
+                                                              .Include(r => r.ReservationStatus)
+                                                              .Include(r => r.ReservationOrigin)
+                                                              .FirstOrDefaultAsync(r => r.Id == id.Value);
+                if (reservation == null)
+                {
+                    return NotFound();
+                }
+                return View(reservation);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
+        }
+
+
+        [Authorize(Roles = "Member")]
+        public async Task<ActionResult> History(int? id)
+        {
+            List<Reservation> reservations = null;
+            if (id.HasValue)//I want to view the reservation list for someone from the PersonDetails view
+            {
+                var person = await _context.People.Include(p => p.Reservations).FirstOrDefaultAsync(p => p.Id == id.Value);
+                if (person == null)
+                {
+                    return NotFound();
+                }
+                reservations = await _context.Reservations.Include(r => r.Person).Where(r => r.PersonId == person.Id)
+                                                            .Include(r => r.Sitting)
+                                                            .ThenInclude(s => s.SittingType)
+                                                            .Include(r => r.ReservationStatus)
+                                                            .Include(r => r.ReservationOrigin)
+                                                            .Include(r => r.Tables)
+                                                            .ToListAsync();
+            }
+            else // I want to check my reservation list (who is register and using this service) 
+            {
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                var person = await _context.People.FirstOrDefaultAsync(p => p.UserId == user.Id);
+                reservations = await _context.Reservations.Include(r => r.Person).Where(r => r.PersonId == person.Id)
+                                                            .Include(r => r.Sitting)
+                                                            .ThenInclude(s => s.SittingType)
+                                                            .Include(r => r.ReservationStatus)
+                                                            .Include(r => r.ReservationOrigin)
+                                                            .Include(r => r.Tables)
+                                                            .ToListAsync();
+            }
+            return View(reservations);
+        }
+  
         
         [Authorize(Roles = "Employee,Manager")]
         [HttpGet]
@@ -305,8 +308,6 @@ namespace ReservationRestaurant.Controllers
                 };
                 m.Tables.Add(selectListItem);
             }
-            
-            //var m = _mapper.Map<Models.Reservation.Update>(reservation);
             m.ReservationStatuses = new SelectList(_context.ReservationStatuses.ToArray(), nameof(ReservationStatus.Id), nameof(ReservationStatus.Name), m.ReservationStatusId);
             m.ReservationOrigins = new SelectList(_context.ReservationOrigins.ToArray(), nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name), m.ReservationOriginId);
             return View(m);
@@ -323,8 +324,7 @@ namespace ReservationRestaurant.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
-                    
+                {   
                     List<int> result = m.SelectedTablesIds;//here you could get the selected Tables Id's
                     List<Table> selectedTables = new List<Table>();
                     foreach (var tId in result)
@@ -358,11 +358,9 @@ namespace ReservationRestaurant.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Details), new { reservation.Id });
                 }
-           
                 catch (Exception ex)
                 {
                     //log the exception
-
                 }
             }
             if (!ModelState.IsValid)
@@ -463,6 +461,5 @@ namespace ReservationRestaurant.Controllers
             }
             return RedirectToAction("Delete", new { id });
         }
-
     }
 }

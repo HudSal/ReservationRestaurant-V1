@@ -77,7 +77,8 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
                     SittingTypeId = psc.SittingTypeId,
                     Capacity = psc.Capacity,
                     RestaurantId = 1,
-                    Name = psc.Name
+                    Name = psc.Name,
+                    IsClosed=psc.IsClosed//-----new 
                 };
                 _context.Sittings.Add(stg);
                 _context.SaveChanges();

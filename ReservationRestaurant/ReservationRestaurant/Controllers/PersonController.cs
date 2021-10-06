@@ -30,15 +30,24 @@ namespace ReservationRestaurant.Controllers
         // GET: Person/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            var person = await _context.People.FirstOrDefaultAsync(p => p.UserId == user.Id);
-            var reservations = await _context.Reservations.Include(r => r.Person).Where(r => r.PersonId == person.Id)
-                                                          .Include(r => r.Sitting)
-                                                          .Include(r => r.ReservationStatus).ToListAsync();
-
-            return View(reservations);
+            try
+            {
+                if (!id.HasValue)
+                {
+                    return StatusCode(400, "Id required");
+                }
+                var person = await _context.People.Include(p=> p.Reservations).FirstOrDefaultAsync(p => p.Id == id.Value);
+                if (person == null)
+                {
+                    return NotFound();
+                }
+                return View(person);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
         }
-
         // GET: Person/Create
         public IActionResult Create()
         {
@@ -136,6 +145,20 @@ namespace ReservationRestaurant.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var person = await _context.People.FindAsync(id);
+            var reservations = await _context.Reservations.Include(r => r.Person).Where(r => r.PersonId == person.Id)
+                                                          .Include(r => r.Sitting)
+                                                          .ThenInclude(s => s.SittingType)
+                                                          .Include(r => r.ReservationStatus)
+                                                          .Include(r => r.ReservationOrigin)
+                                                          .Include(r => r.Tables)
+                                                          .ToListAsync();
+             if (person.UserId != null)
+            {
+                var user = await _userManager.FindByIdAsync(person.UserId);
+                await _userManager.RemoveFromRolesAsync(user,new List<string>{ "Employee", "Member"});
+                await _userManager.DeleteAsync(user);
+            }
+            _context.Reservations.RemoveRange(reservations);                                            
             _context.People.Remove(person);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

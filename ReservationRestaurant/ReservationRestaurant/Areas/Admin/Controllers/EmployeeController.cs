@@ -242,7 +242,7 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
                
                 var person = await _context.People.FirstOrDefaultAsync(p => p.Id == id.Value); //get the person with associated id
                
-                var users = await _userManager.FindByIdAsync(person.UserId.ToString()); //use the person from people table to get the user 
+                var user = await _userManager.FindByIdAsync(person.UserId.ToString()); //use the person from people table to get the user 
                 if (person == null)
                 {
                     return NotFound();

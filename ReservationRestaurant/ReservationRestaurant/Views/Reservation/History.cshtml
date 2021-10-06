@@ -1,19 +1,23 @@
-﻿@model IEnumerable<ReservationRestaurant.Data.Reservation>
+@model IEnumerable<ReservationRestaurant.Data.Reservation>
 
 @{
     ViewData["Title"] = "History";
 }
 
-<h1>History</h1>
+<h1>History--Reservation List</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="PreCreate">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
                 Reservation ID
+            </th>
+            <th>Person Name</th>
+            <th>
+               Person Email
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.StartTime)
@@ -25,16 +29,22 @@
                 @Html.DisplayNameFor(model => model.Guests)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ReservationStatus)
+                Reservation Status
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ReservationOrigin)
+                Reservation Origin
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Sitting)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Person)
+                Booked Tables
+            </th>
+            <th>
+                Sitting Type
+            </th>
+            <th>
+                Special Requirement
             </th>
             <th></th>
         </tr>
@@ -44,6 +54,10 @@
         <tr>
             <td>
                 @item.Id
+            </td>
+            <td>@item.Person.FirstName @item.Person.LastName</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Person.Email)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartTime)
@@ -64,10 +78,23 @@
                 @Html.DisplayFor(modelItem => item.Sitting.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Person.Email)
+                <div>
+                    @foreach (var table in item.Tables)
+                    {
+                        <div>
+                            @table.Name
+                        </div>
+                    }
+                </div>
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                @Html.DisplayFor(modelItem => item.Sitting.SittingType.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SpecialRequirement)
+            </td>
+            <td>
+                <a asp-action="Update" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>

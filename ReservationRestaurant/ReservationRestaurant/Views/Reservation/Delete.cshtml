@@ -65,6 +65,12 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Sitting.SittingType.Name)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SpecialRequirement)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SpecialRequirement)
+        </dd>
         @if (User.IsInRole("Manager"))
         {
             <dt class="col-sm-2">

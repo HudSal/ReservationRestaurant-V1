@@ -57,7 +57,7 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
                 var result = await _userManager.CreateAsync(user, m.Password);
                 if(result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, "Employee");
+                    await _userManager.AddToRolesAsync(user, new List<string> { "Member", "Employee" });
                     var p = new Person
                     {
                         FirstName = m.FirstName,
@@ -67,7 +67,7 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
                         Phone = m.Phone
                        
                     };
-                    await _personService.UpsertPersonAsync(p, true);
+                    await _personService.UpsertPersonAsync(p, false);// NO NEED to allow upadte, it should be false because we're going to create new employee 
                     return RedirectToAction("Index", "Home", new { area = "Admin" });
                     
                 }

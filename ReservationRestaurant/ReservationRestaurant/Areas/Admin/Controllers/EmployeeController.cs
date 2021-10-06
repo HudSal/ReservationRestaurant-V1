@@ -212,7 +212,15 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
                 {
                     return NotFound();
                 }
-                return View(person);
+                 var m = new Models.Employee.Delete()
+                {
+                    Id = person.Id,
+                    FirstName=person.FirstName,
+                    LastName=person.LastName,
+                    Phone=person.Phone,
+                    Email=person.Email
+                };
+                return View(m);
             }
             catch (Exception ex)
             {
@@ -223,7 +231,7 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public async Task<IActionResult> DeleteConfirmed(int? id, Models.Employee.Delete m)
         {
             try
             {
@@ -239,12 +247,25 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
                 {
                     return NotFound();
                 }
-
-                
-                await _userManager.RemoveFromRoleAsync(users, "Employee");//remove the user from the role then delete altogether
-                await _userManager.DeleteAsync(users);
-                _context.People.Remove(person);
-                await _context.SaveChangesAsync();
+                if (m.FromTheSystem)
+                {
+                    var reservations = await _context.Reservations.Include(r => r.Person).Where(r => r.PersonId == person.Id)
+                                                                  .Include(r => r.Sitting)
+                                                                  .ThenInclude(s => s.SittingType)
+                                                                  .Include(r => r.ReservationStatus)
+                                                                  .Include(r => r.ReservationOrigin)
+                                                                  .Include(r => r.Tables)
+                                                                  .ToListAsync();
+                    await _userManager.RemoveFromRolesAsync(user, new List<string> { "Employee", "Member" });
+                    await _userManager.DeleteAsync(user);
+                    _context.Reservations.RemoveRange(reservations);
+                    _context.People.Remove(person);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    await _userManager.RemoveFromRoleAsync(user, "Employee");//remove the user from the Employee List 
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

@@ -9,12 +9,12 @@ namespace ReservationRestaurant.Models.Reservation
 {
     public class PreCreate
     {
-
+        [Display(Name ="Date")]
         public string StartTime { get; set; }
         public int Guests { get; set; }
 
         public SelectList SittingTypeSL { get; set; }
-
+        [Display(Name = "Sitting")]
         public int SittingTypeId { get; set; }
         public SittingType SittingType { get; set; }
 

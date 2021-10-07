@@ -76,13 +76,15 @@ namespace ReservationRestaurant.Controllers
             if (selectedSitting == null)
             {
                 preCreate.SittingTypeSL = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name));
-                preCreate.Message = "The selected day doesn't have that particular sittings";
+                preCreate.Message = $"The selected day ({dateSelected.ToShortDateString()}) doesn't have that particular sittings. " +
+                    "Please contact the restaurant to check if we can accommodate your request";
                 return View(preCreate);
             }
             if (selectedSitting.IsClosed == true || selectedSitting.Vacancies < preCreate.Guests)
             {
                 preCreate.SittingTypeSL = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name));
-                preCreate.Message = "The selected sitting is full";
+                preCreate.Message = $"The sitting ({selectedSitting.SittingType.Name}) for selected day is full. " +
+                    "Please contact the restaurant to check if we can accommodate your request";
                 return View(preCreate);
             }
             var create = new Models.Reservation.Create()

@@ -48,6 +48,24 @@ namespace ReservationRestaurant.Controllers
                 return StatusCode(500);
             }
         }
+        [Authorize(Roles = "Member")]
+        public async Task<IActionResult> MyDetails()
+        {
+            try
+            {
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                var person = await _context.People.FirstOrDefaultAsync(p => p.UserId == user.Id);
+                if (person == null)
+                {
+                    return NotFound();
+                }
+                return RedirectToAction(nameof(Details),new { person.Id});
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
+        }
         // GET: Person/Create
         public IActionResult Create()
         {

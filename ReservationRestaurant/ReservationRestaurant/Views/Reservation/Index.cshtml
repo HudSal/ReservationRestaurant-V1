@@ -9,6 +9,14 @@
 <p>
     <a asp-action="PreCreate">Create New</a>
 </p>
+<form asp-action="Search">
+    <label class="control-label"> <b>Search Option:</b> </label>
+    @Html.RadioButton("option", "ReservationId") <text> Reservation Id </text> 
+    @Html.RadioButton("option", "Email") <text> Person Email </text>
+    @Html.RadioButton("option", "Name")<text> First Name of Person</text>
+    @Html.TextBox("search") 
+    <input type = "submit" name = "submit" asp-action="Search" value= "Search" class="btn btn-primary"/>
+</form>
 <table class="table">
     <thead>
         <tr>

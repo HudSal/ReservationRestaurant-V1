@@ -219,7 +219,63 @@ namespace ReservationRestaurant.Controllers
                 return StatusCode(500);
             }
         }
-
+        
+        public async Task<IActionResult> Search(string option, string search)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    return StatusCode(400, "Search Input is required, can not be empty");
+                }
+                if (string.IsNullOrEmpty(option))
+                {
+                    return StatusCode(400, "Option Input is required, can not be empty");
+                }
+                if (option == "ReservationId")
+                {
+                    int resrvationId = int.Parse(search);
+                    var reservation = await _context.Reservations.Include(r => r.Person)
+                                                                      .Include(r => r.Sitting)
+                                                                      .ThenInclude(s => s.SittingType)
+                                                                      .Include(r => r.ReservationStatus)
+                                                                      .Include(r => r.ReservationOrigin)
+                                                                      .Include(r => r.Tables)
+                                                                      .FirstOrDefaultAsync(r => r.Id == resrvationId);
+                    if (reservation == null)
+                    {
+                        return NotFound();
+                    }
+                    return RedirectToAction(nameof(Details), new { reservation.Id });
+                }
+                else if (option == "Email")
+                {
+                    var person = await _context.People.FirstOrDefaultAsync(p => p.Email == search.Trim().ToLower());
+                    if (person == null)
+                    {
+                        return NotFound();
+                    }
+                    return RedirectToAction(nameof(History), new { person.Id });
+                }
+                else if (option == "Name")
+                {
+                    var person = await _context.People.FirstOrDefaultAsync(p => p.FirstName == search.Trim());
+                    if (person == null)
+                    {
+                        return NotFound();
+                    }
+                    return RedirectToAction(nameof(History), new { person.Id });
+                }
+                else
+                {
+                    return StatusCode(400, "Option Or Search Input is required, can not be empty");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
+        }
 
         [Authorize(Roles = "Member")]
         public async Task<ActionResult> History(int? id)
@@ -256,7 +312,7 @@ namespace ReservationRestaurant.Controllers
         }
   
         
-        [Authorize(Roles = "Employee,Manager")]
+        [Authorize(Roles = "Member")]
         [HttpGet]
         public async Task<IActionResult> Update(int? id)
         {
@@ -293,10 +349,7 @@ namespace ReservationRestaurant.Controllers
                 Duration = reservation.Duration,
                 ReservationStatusId = reservation.ReservationStatusId,
                 ReservationOriginId = reservation.ReservationOriginId,
-                SittingTypeId = reservation.Sitting.SittingTypeId,
-                SittingType=reservation.Sitting.SittingType,
                 SittingId = reservation.SittingId,
-                Sitting=reservation.Sitting,
                 ExistingTables = reservation.Tables,
                 ReservationStartDateTime=reservation.StartTime
             };
@@ -310,12 +363,16 @@ namespace ReservationRestaurant.Controllers
                 };
                 m.Tables.Add(selectListItem);
             }
+            foreach (var tId in m.ExistingTables)
+            {
+                m.SelectedTablesIds.Add(tId.Id);
+            }
             m.ReservationStatuses = new SelectList(_context.ReservationStatuses.ToArray(), nameof(ReservationStatus.Id), nameof(ReservationStatus.Name), m.ReservationStatusId);
             m.ReservationOrigins = new SelectList(_context.ReservationOrigins.ToArray(), nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name), m.ReservationOriginId);
             return View(m);
         }
 
-        [Authorize(Roles = "Manager,Employee")]
+        [Authorize(Roles = "Member")]
         [HttpPost]
         public async Task<IActionResult> Update(int id, Models.Reservation.Update m)
         {
@@ -327,25 +384,29 @@ namespace ReservationRestaurant.Controllers
             {
                 try
                 {   
-                    List<int> result = m.SelectedTablesIds;//here you could get the selected Tables Id's
-                    List<Table> selectedTables = new List<Table>();
-                    foreach (var tId in result)
-                    {
-                        var tableSelcted = await _context.Tables.FirstOrDefaultAsync(t => t.Id == tId);
-                        selectedTables.Add(tableSelcted);
-                    }
                     var reservation = await _context.Reservations.Include(r => r.Person)
                                                         .Include(r => r.Sitting)
                                                         .Include(r => r.ReservationStatus)
                                                         .Include(r => r.ReservationOrigin)
                                                         .Include(r => r.Tables)
                                                         .FirstOrDefaultAsync(r => r.Id == id);
-                    if (reservation.Tables.Count != 0)
+                    if (reservation.Tables.Count != 0 && m.SelectedTablesIds.Count != 0)
                     {
                         reservation.Tables.Clear();
                         _context.Reservations.Update(reservation);
                         await _context.SaveChangesAsync();
                     }
+                    if (m.SelectedTablesIds.Count != 0)
+                    {
+                        List<int> result = m.SelectedTablesIds;//here you could get the selected Tables Id's
+                        List<Table> selectedTables = new List<Table>();
+                        foreach (var tId in result)
+                        {
+                            var tableSelcted = await _context.Tables.FirstOrDefaultAsync(t => t.Id == tId);
+                            selectedTables.Add(tableSelcted);
+                        }
+                        reservation.Tables.AddRange(selectedTables);
+                     }
                     reservation.Id = m.Id;
                     reservation.PersonId = m.PersonId;
                     reservation.Guests = m.Guests;
@@ -355,14 +416,13 @@ namespace ReservationRestaurant.Controllers
                     reservation.ReservationOriginId = m.ReservationOriginId;
                     reservation.SittingId = m.SittingId;
                     reservation.SpecialRequirement = m.SpecialRequirement;
-                    reservation.Tables.AddRange(selectedTables);
                     _context.Reservations.Update(reservation);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Details), new { reservation.Id });
                 }
                 catch (Exception ex)
                 {
-                    //log the exception
+                     return NotFound(ex);
                 }
             }
             if (!ModelState.IsValid)
@@ -375,31 +435,16 @@ namespace ReservationRestaurant.Controllers
             var allTables = await _context.Tables.ToListAsync();
             foreach (var table in allTables)
             {
-                foreach (var tId in m.SelectedTablesIds)
+                SelectListItem selectListItem = new SelectListItem()
                 {
-                    if(tId == table.Id)
-                    {
-                        SelectListItem selectListItem = new SelectListItem()
-                        {
-                            Text = table.Name,
-                            Value = table.Id.ToString(),
-                            Selected = true //for test, here all the item will be selected
-                        };
-                        m.Tables.Add(selectListItem);
-                    }
-                    else
-                    {
-                        SelectListItem selectListItem = new SelectListItem()
-                        {
-                            Text = table.Name,
-                            Value = table.Id.ToString()
-                        };
-                        m.Tables.Add(selectListItem);
-                    }
-                }
+                    Text = table.Name,
+                    Value = table.Id.ToString()
+                };
+                m.Tables.Add(selectListItem);
             }
             m.ReservationStatuses = new SelectList(_context.ReservationStatuses.ToArray(), nameof(ReservationStatus.Id), nameof(ReservationStatus.Name), m.ReservationStatusId);
             m.ReservationOrigins = new SelectList(_context.ReservationOrigins.ToArray(), nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name), m.ReservationOriginId);
+            m.Sitting = await _context.Sittings.Include(s => s.SittingType).FirstOrDefaultAsync(s => s.Id == m.SittingId);
             return View(m);
         }
 

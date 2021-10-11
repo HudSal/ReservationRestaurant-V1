@@ -7634,19 +7634,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\cratl\\.nuget\\packages\\": {}
+    "C:\\Users\\hudaa\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\cratl\\OneDrive\\Desktop\\DIPS PROG\\GroupF_BeanScene\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
+      "projectUniqueName": "C:\\Users\\hudaa\\Desktop\\Diploma-Term1\\ProgProject-Diploma\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
       "projectName": "ReservationRestaurant",
-      "projectPath": "C:\\Users\\cratl\\OneDrive\\Desktop\\DIPS PROG\\GroupF_BeanScene\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
-      "packagesPath": "C:\\Users\\cratl\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\cratl\\OneDrive\\Desktop\\DIPS PROG\\GroupF_BeanScene\\ReservationRestaurant\\ReservationRestaurant\\obj\\",
+      "projectPath": "C:\\Users\\hudaa\\Desktop\\Diploma-Term1\\ProgProject-Diploma\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
+      "packagesPath": "C:\\Users\\hudaa\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\hudaa\\Desktop\\Diploma-Term1\\ProgProject-Diploma\\ReservationRestaurant\\ReservationRestaurant\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\cratl\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\hudaa\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

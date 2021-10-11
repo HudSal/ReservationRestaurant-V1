@@ -15,6 +15,9 @@
           "lib/netstandard2.0/AutoMapper.dll": {}
         }
       },
+      "chosen/1.2.0": {
+        "type": "package"
+      },
       "Humanizer.Core/2.8.26": {
         "type": "package",
         "compile": {
@@ -2209,6 +2212,20 @@
         "lib/net461/AutoMapper.xml",
         "lib/netstandard2.0/AutoMapper.dll",
         "lib/netstandard2.0/AutoMapper.xml"
+      ]
+    },
+    "chosen/1.2.0": {
+      "sha512": "nrcF57kN5LRb/drcnK43W+cDKuAxDXhVlTBI4wOmm2eTjQW1/nRjV/G9zs+xavsgtquTH7CeJbYDbZZOsMrABw==",
+      "type": "package",
+      "path": "chosen/1.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "chosen.1.2.0.nupkg.sha512",
+        "chosen.nuspec",
+        "content/Content/chosen-sprite.png",
+        "content/Content/chosen-sprite@2x.png",
+        "content/Content/chosen.css"
       ]
     },
     "Humanizer.Core/2.8.26": {
@@ -7630,7 +7647,8 @@
       "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation >= 5.0.9",
       "Microsoft.EntityFrameworkCore.SqlServer >= 5.0.9",
       "Microsoft.EntityFrameworkCore.Tools >= 5.0.9",
-      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 5.0.2"
+      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 5.0.2",
+      "chosen >= 1.2.0"
     ]
   },
   "packageFolders": {
@@ -7708,6 +7726,10 @@
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
             "target": "Package",
             "version": "[5.0.2, )"
+          },
+          "chosen": {
+            "target": "Package",
+            "version": "[1.2.0, )"
           }
         },
         "imports": [

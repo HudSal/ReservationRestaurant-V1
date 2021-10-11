@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "CNEmbg+lYOeLbnVV4wlDC1H0DJ8FTOLHOsQYzEGpgV0zRn2dT9mGnl4Lec+mp9QsEzya3lUusfWfPdzyhvWQFA==",
+  "dgSpecHash": "6x2+HzUzPn4wv2GYtFvfK/rZEiOA1GC4WcRwSdtdmY7xGyVf44m8owk2GyGq5FKG510f3Ahx4aKpdIT4pbzlog==",
   "success": true,
   "projectFilePath": "C:\\Users\\hudaa\\Desktop\\Diploma-Term1\\ProgProject-Diploma\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\hudaa\\.nuget\\packages\\automapper\\10.1.1\\automapper.10.1.1.nupkg.sha512",
+    "C:\\Users\\hudaa\\.nuget\\packages\\chosen\\1.2.0\\chosen.1.2.0.nupkg.sha512",
     "C:\\Users\\hudaa\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\hudaa\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.9\\microsoft.aspnetcore.cryptography.internal.5.0.9.nupkg.sha512",
     "C:\\Users\\hudaa\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\5.0.9\\microsoft.aspnetcore.cryptography.keyderivation.5.0.9.nupkg.sha512",

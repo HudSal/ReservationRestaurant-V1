@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Index -- Reservations List</h1>
 
 <p>
     <a asp-action="PreCreate">Create New</a>
@@ -22,6 +22,9 @@
         <tr>
             <th>Id</th>
             <th>Person Name</th>
+            <th>
+                Person Email
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.StartTime)
             </th>
@@ -46,9 +49,7 @@
             <th>
                 Sitting Type
             </th>
-            <th>
-                Person Email
-            </th>
+
             <th>
                 Special Requirement
             </th>
@@ -60,6 +61,9 @@
         <tr>
             <td>@item.Id</td>
             <td>@item.Person.FirstName @item.Person.LastName</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Person.Email)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartTime)
             </td>
@@ -78,7 +82,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Sitting.Name)
             </td>
-             <td>
+            <td>
                 <div>
                     @foreach (var table in item.Tables)
                     {
@@ -91,10 +95,8 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Sitting.SittingType.Name)
             </td>
+
             <td>
-                @Html.DisplayFor(modelItem => item.Person.Email)
-            </td>
-             <td>
                 @Html.DisplayFor(modelItem => item.SpecialRequirement)
             </td>
             <td>

@@ -9,7 +9,7 @@
     <div class="col-md-4">
         <form asp-action="Update">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-<div>Reservation For: @Model.FirstName @Model.LastName</div>
+            <div>Reservation For: @Model.FirstName @Model.LastName</div>
             <div>Email: @Model.Email</div>
             <div>Phone Number: @Model.PhoneNumber</div>
             <div>Date and Time: @Model.StartTime @@ @Model.TimeSlot.Time</div>
@@ -30,7 +30,7 @@
                 <input asp-for="Duration" class="form-control" />
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
-             @if (User.IsInRole("Manager") || User.IsInRole("Employee"))
+            @if (User.IsInRole("Manager") || User.IsInRole("Employee"))
             {
                 <div class="form-group">
                     <label asp-for="ExistingTables" class="control-label">Tables: </label>
@@ -39,7 +39,7 @@
                         <span> @Model.ExistingTables[i].Name, </span>
                         <input type="hidden" asp-for="ExistingTables" id="ExistingTables[@i].Id" name="ExistingTables[@i].Id" value="@Model.ExistingTables[i].Id" />
                     }
-                </div>  
+                </div>
                 <div class="form-group">
                     <label asp-for="SelectedTablesIds" class="control-label"></label>
                     <select asp-for="SelectedTablesIds" class="form-control chosen-select-width" asp-items="Model.Tables" multiple tabindex="16">
@@ -74,10 +74,19 @@
         </form>
     </div>
 </div>
+@if (User.IsInRole("Manager") || User.IsInRole("Employee"))
+{
+    <div>
+        <a asp-action="Index">Back to Reservation List</a>
+    </div>
+}
+else
+{
+    <div>
+        <a asp-action="History">Back to My Reservation List</a>
+    </div>
+}
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Styles{
     <link href="~/css/chosen.css" rel="stylesheet" />

@@ -192,7 +192,6 @@ namespace ReservationRestaurant.Controllers
             } 
             return View(m);
         }
-
                                                   
         public async Task<ActionResult> Details(int? id)
         {
@@ -207,6 +206,7 @@ namespace ReservationRestaurant.Controllers
                                                               .ThenInclude(s => s.SittingType)
                                                               .Include(r => r.ReservationStatus)
                                                               .Include(r => r.ReservationOrigin)
+                                                              .Include(r=>r.Tables)
                                                               .FirstOrDefaultAsync(r => r.Id == id.Value);
                 if (reservation == null)
                 {
@@ -322,7 +322,7 @@ namespace ReservationRestaurant.Controllers
             }
             var reservation = await _context.Reservations.Include(r => r.Person)
                                                               .Include(r => r.Sitting)
-                                                              .ThenInclude(s => s.SittingType)
+                                                              .ThenInclude(s => s.SittingType).ThenInclude(s => s.TimeSlots)
                                                               .Include(r => r.ReservationStatus)
                                                               .Include(r => r.ReservationOrigin)
                                                               .Include(r=>r.Tables)
@@ -350,10 +350,11 @@ namespace ReservationRestaurant.Controllers
                 ReservationStatusId = reservation.ReservationStatusId,
                 ReservationOriginId = reservation.ReservationOriginId,
                 SittingId = reservation.SittingId,
+                Sitting = reservation.Sitting,
                 ExistingTables = reservation.Tables,
                 ReservationStartDateTime=reservation.StartTime
             };
-             var allTables = await _context.Tables.ToListAsync();
+            var allTables = await _context.Tables.ToListAsync();
             foreach (var table in allTables)
             {
                 SelectListItem selectListItem = new SelectListItem()

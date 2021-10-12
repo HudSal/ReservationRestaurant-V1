@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\hudaa\\Desktop\\Diploma-Term1\\ProgProject-Diploma\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj": {}
+    "C:\\Users\\craig\\Desktop\\Project\\ReservationRestaurant-V4-Master\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj": {}
   },
   "projects": {
-    "C:\\Users\\hudaa\\Desktop\\Diploma-Term1\\ProgProject-Diploma\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj": {
+    "C:\\Users\\craig\\Desktop\\Project\\ReservationRestaurant-V4-Master\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hudaa\\Desktop\\Diploma-Term1\\ProgProject-Diploma\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
+        "projectUniqueName": "C:\\Users\\craig\\Desktop\\Project\\ReservationRestaurant-V4-Master\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
         "projectName": "ReservationRestaurant",
-        "projectPath": "C:\\Users\\hudaa\\Desktop\\Diploma-Term1\\ProgProject-Diploma\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
-        "packagesPath": "C:\\Users\\hudaa\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hudaa\\Desktop\\Diploma-Term1\\ProgProject-Diploma\\ReservationRestaurant\\ReservationRestaurant\\obj\\",
+        "projectPath": "C:\\Users\\craig\\Desktop\\Project\\ReservationRestaurant-V4-Master\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
+        "packagesPath": "C:\\Users\\craig\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\craig\\Desktop\\Project\\ReservationRestaurant-V4-Master\\ReservationRestaurant\\ReservationRestaurant\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\hudaa\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\craig\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -99,7 +95,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     }

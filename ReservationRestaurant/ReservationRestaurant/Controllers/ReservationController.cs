@@ -49,7 +49,8 @@ namespace ReservationRestaurant.Controllers
 
             var maxDate = sittingList.Select(x => x.StartTime).Max(); //the latest day in the sittingList
 
-            int dateDifference = (int)(maxDate - today).TotalDays; // how many days between today and last day of available sitting
+            int dateDifference = (int)(maxDate - today).TotalDays-2; // how many days between today and last day of available sitting
+            // minus two because they way DateTime count days includes the starting day (between today and tomo = 2 days)
 
             string maximumBookingDate = "+" + (dateDifference.ToString()) + "d"; // to get format +2d or +3d or +4d that I need to use for datepicker jquery
 

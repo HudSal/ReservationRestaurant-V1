@@ -11,7 +11,7 @@ namespace ReservationRestaurant.Areas.Admin.Models.Sitting
     public class Create
     {
         public string Name { get; set; }
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime { get; set; } = DateTime.Now;
         public DateTime EndTime { get; set; }
         public int Capacity { get; set; }
 

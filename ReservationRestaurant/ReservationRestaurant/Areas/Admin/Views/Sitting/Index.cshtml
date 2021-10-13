@@ -33,11 +33,9 @@
                 @Html.DisplayNameFor(model => model.Capacity)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Vacancies) // newly added
+                @Html.DisplayNameFor(model => model.Vacancies)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Restaurant)
-            </th>
+         
             <th>
                 @Html.DisplayNameFor(model => model.SittingType)
             </th>
@@ -65,18 +63,21 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Capacity)
             </td>
-             <td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Vacancies)
             </td>
+         
             <td>
-                @Html.DisplayFor(modelItem => item.Restaurant.Name)
+                @Html.DisplayFor(modelItem => item.SittingType.Name)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SittingType.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsClosed)
-            </td>
+            @if (item.IsClosed)
+            {
+                <td>Closed</td>
+            }
+            else
+            {
+                <td>Open</td>
+            }
             <td>
                 <a asp-action="Update" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

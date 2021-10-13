@@ -23,7 +23,7 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
     
         public IActionResult Index(string sortOrder)
         {
-            var listOfSittings = _context.Sittings.Include(x => x.SittingType).Include(x => x.Restaurant).ToList();
+            var listOfSittings = _context.Sittings.Include(x => x.SittingType).Include(x => x.Restaurant).Include(x=>x.Reservations).ToList();
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name" : "Name";
             ViewBag.DateSortParm = String.IsNullOrEmpty(sortOrder) ? "Date" : "Date";
             ViewBag.TypeSortParm = String.IsNullOrEmpty(sortOrder) ? "Sitting" : "Sitting";
@@ -193,18 +193,26 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
                     //var sittingList = await _context.Sittings.Include(s => s.Reservations).Where(s => s.Id == sitting.Id)
                     //                                        .ToListAsync();// the sitting which I want to delete including all the reservation which is belong to this sitting
 
-                    var sittingList = await _context.Sittings.Include(s => s.Reservations).FirstOrDefaultAsync(s => s.Id == sitting.Id);
+                    var sittingList = await _context.Sittings.Include(s => s.Reservations)
+                        .Include(s=>s.SittingType)
+                        .Include(s=>s.Restaurant).FirstOrDefaultAsync(s => s.Id == sitting.Id);
                                                           
 
-                    //var reservationList = sitting.Reservations.ToList();//I Add this
+                    if(sittingList.Reservations.Count > 0)
+                    {
+                        ViewBag.ReservationExist = "This sitting cannot be deleted because it has existing reservations." +
+                            "Please delete the reservations before deleting this sitting";
+                        return View(sittingList) ;
+                    }
+                    
                     _context.Sittings.Remove(sittingList);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-
-
+                    return StatusCode(500, e.Message);
+                    
                 }
 
                 return RedirectToAction("Delete", new { id });

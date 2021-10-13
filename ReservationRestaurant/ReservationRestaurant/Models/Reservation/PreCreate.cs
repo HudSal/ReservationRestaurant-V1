@@ -12,6 +12,7 @@ namespace ReservationRestaurant.Models.Reservation
     {
         [Display(Name ="Date")]
         public string StartTime { get; set; }
+
         [Range(1, int.MaxValue, ErrorMessage = "The field {0} must be at least {1}.")]
         public int Guests { get; set; }
 

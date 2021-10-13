@@ -17,7 +17,7 @@
             <hr />
             <div class="form-group">
                 <label asp-for="Guests" class="control-label"></label>
-                <input asp-for="Guests" class="form-control select" />
+                <input asp-for="Guests" class="form-control" />
                 <span asp-validation-for="Guests" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -42,7 +42,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="SelectedTablesIds" class="control-label"></label>
-                    <select asp-for="SelectedTablesIds" class="form-control chosen-select-width" asp-items="Model.Tables" multiple tabindex="16" id="ABC">
+                    <select asp-for="SelectedTablesIds" class="form-control chosen-select-width" id="abc" asp-items="Model.Tables" multiple tabindex="16">
                         <option value="">-- Select Some Tables --</option>
                     </select>
                 </div>
@@ -112,7 +112,7 @@ else
     <script src="~/js/prism.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#ABC").chosen();
+            $("#abc").chosen();
             $("chosen-select-width").chosen();
 
         });

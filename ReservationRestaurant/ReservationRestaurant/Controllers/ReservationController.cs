@@ -27,7 +27,7 @@ namespace ReservationRestaurant.Controllers
             _personService = personService;
             _userManager = userManager;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string option, string sortOrder)
         {
             var reservation = await _context.Reservations.Include(r => r.Person)
                                                        .Include(r => r.Sitting)
@@ -36,6 +36,58 @@ namespace ReservationRestaurant.Controllers
                                                        .Include(r => r.ReservationOrigin)
                                                        .Include(r => r.Tables)
                                                        .OrderBy(r => r.Id).ToArrayAsync();
+
+
+            ViewData["CurrentFilter"] = searchString;
+
+
+
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name" : "Name";
+            ViewBag.DateSortParm = String.IsNullOrEmpty(sortOrder) ? "Date" : "Date";
+            ViewBag.TypeSortParm = String.IsNullOrEmpty(sortOrder) ? "Sitting" : "Sitting";
+
+
+            switch (sortOrder)
+            {
+                case "Name":
+                    reservation = reservation.OrderBy(s => s.Person.LastName).ToArray();
+                    break;
+                case "Date":
+                    reservation = reservation.OrderBy(s => s.StartTime).ToArray();
+                    break;
+                case "Sitting":
+                    reservation = reservation.OrderBy(s => s.Sitting.SittingTypeId).ToArray();
+                    break;
+                default:
+                    reservation = reservation.OrderBy(s => s.Id).ToArray();
+                    break;
+            }
+
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                if (option == "Name")
+                {
+                    reservation = reservation.Where(s => s.Person.LastName.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToArray();
+                }
+
+                else if (option == "Email")
+                {
+                    reservation = reservation.Where(s => s.Person.Email.Contains(searchString)).ToArray();
+                }
+
+                else if (option == "ReservationId")
+                {
+                    reservation = reservation.Where(s => s.Id == int.Parse(searchString)).ToArray();
+                }
+                else
+                {
+                    return View(reservation);
+                }
+
+            }
+
+
             return View(reservation);
         }
         
@@ -49,7 +101,8 @@ namespace ReservationRestaurant.Controllers
 
             var maxDate = sittingList.Select(x => x.StartTime).Max(); //the latest day in the sittingList
 
-            int dateDifference = (int)(maxDate - today).TotalDays; // how many days between today and last day of available sitting
+            int dateDifference = (int)(maxDate - today).TotalDays-2; // how many days between today and last day of available sitting
+            // minus two because they way DateTime count days includes the starting day (between today and tomo = 2 days)
 
             string maximumBookingDate = "+" + (dateDifference.ToString()) + "d"; // to get format +2d or +3d or +4d that I need to use for datepicker jquery
 
@@ -66,37 +119,62 @@ namespace ReservationRestaurant.Controllers
         [HttpPost]
         public async Task<IActionResult> PreCreate(Models.Reservation.PreCreate preCreate)
         {
-            DateTime dateSelected = DateTime.Parse(preCreate.StartTime);
-
-
-            var allSitting = await _context.Sittings.Include(x => x.SittingType).Include(x=>x.Reservations).ToListAsync();  //first get a list of all the available sittings
-
-            //this returns particular sitting that the customer had chosen, based on the date and sittingType (bfast,lunch, etc)
-            var selectedSitting = allSitting.FirstOrDefault(x => x.StartTime.Day == dateSelected.Day && x.SittingTypeId == preCreate.SittingTypeId);
-            if (selectedSitting == null)
+            if (ModelState.IsValid)
             {
-                preCreate.SittingTypeSL = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name));
-                preCreate.Message = $"The selected day ({dateSelected.ToShortDateString()}) doesn't have that particular sittings. " +
-                    "Please contact the restaurant to check if we can accommodate your request";
-                return View(preCreate);
+                DateTime dateSelected = DateTime.Parse(preCreate.StartTime);
+
+
+                var allSitting = await _context.Sittings.Include(x => x.SittingType).Include(x => x.Reservations).ToListAsync();  //first get a list of all the available sittings
+
+                if(preCreate.Guests < 1)
+                {
+                    preCreate.SittingTypeSL = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name));
+                    preCreate.Message = $"The number of guest has to be bigger than 1";
+                    return View(preCreate);
+                }
+
+                //this returns particular sitting that the customer had chosen, based on the date and sittingType (bfast,lunch, etc)
+                var selectedSitting = allSitting.FirstOrDefault(x => x.StartTime.Day == dateSelected.Day && x.SittingTypeId == preCreate.SittingTypeId);
+                if (selectedSitting == null)
+                {
+                    preCreate.SittingTypeSL = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name));
+                    preCreate.Message = $"The selected day ({dateSelected.ToShortDateString()}) doesn't have that particular sittings. " +
+                        "Please contact the restaurant to check if we can accommodate your request";
+                    return View(preCreate);
+                }
+                if (selectedSitting.IsClosed == true || selectedSitting.Vacancies < preCreate.Guests)
+                {
+                    preCreate.SittingTypeSL = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name));
+                    preCreate.Message = $"The sitting ({selectedSitting.SittingType.Name}) for selected day is full. " +
+                        "Please contact the restaurant to check if we can accommodate your request";
+                    return View(preCreate);
+                }
+                var create = new Models.Reservation.Create()
+                {
+                    StartTime = preCreate.StartTime,
+                    Guests = preCreate.Guests,
+                    SittingTypeId = preCreate.SittingTypeId,
+                    SittingId = selectedSitting.Id,
+                    SittingType = selectedSitting.SittingType
+                };
+
+                return RedirectToAction(nameof(Create), create); 
             }
-            if (selectedSitting.IsClosed == true || selectedSitting.Vacancies < preCreate.Guests)
-            {
-                preCreate.SittingTypeSL = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name));
-                preCreate.Message = $"The sitting ({selectedSitting.SittingType.Name}) for selected day is full. " +
-                    "Please contact the restaurant to check if we can accommodate your request";
-                return View(preCreate);
-            }
-            var create = new Models.Reservation.Create()
-            {
-                StartTime = preCreate.StartTime,
-                Guests = preCreate.Guests,
-                SittingTypeId = preCreate.SittingTypeId,
-                SittingId=selectedSitting.Id,
-                SittingType= selectedSitting.SittingType
-            };
 
-            return RedirectToAction(nameof(Create), create);
+            var today = DateTime.Now;
+            var sittingList = await _context.Sittings.Include(x => x.SittingType).ToListAsync();
+            var maxDate = sittingList.Select(x => x.StartTime).Max(); //the latest day in the sittingList
+            int dateDifference = (int)(maxDate - today).TotalDays - 2; // how many days between today and last day of available sitting
+            // minus two because they way DateTime count days includes the starting day (between today and tomo = 2 days)
+            string maximumBookingDate = "+" + (dateDifference.ToString()) + "d"; // to get format +2d or +3d or +4d that I need to use for datepicker jquery
+
+
+            preCreate.SittingTypeSL = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name));
+            preCreate.AmountOfDaysForCalendar = maximumBookingDate;
+            
+
+            return View(preCreate);
+
         }
 
         [HttpGet]
@@ -220,62 +298,62 @@ namespace ReservationRestaurant.Controllers
             }
         }
         
-        public async Task<IActionResult> Search(string option, string search)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(search))
-                {
-                    return StatusCode(400, "Search Input is required, can not be empty");
-                }
-                if (string.IsNullOrEmpty(option))
-                {
-                    return StatusCode(400, "Option Input is required, can not be empty");
-                }
-                if (option == "ReservationId")
-                {
-                    int resrvationId = int.Parse(search);
-                    var reservation = await _context.Reservations.Include(r => r.Person)
-                                                                      .Include(r => r.Sitting)
-                                                                      .ThenInclude(s => s.SittingType)
-                                                                      .Include(r => r.ReservationStatus)
-                                                                      .Include(r => r.ReservationOrigin)
-                                                                      .Include(r => r.Tables)
-                                                                      .FirstOrDefaultAsync(r => r.Id == resrvationId);
-                    if (reservation == null)
-                    {
-                        return NotFound();
-                    }
-                    return RedirectToAction(nameof(Details), new { reservation.Id });
-                }
-                else if (option == "Email")
-                {
-                    var person = await _context.People.FirstOrDefaultAsync(p => p.Email == search.Trim().ToLower());
-                    if (person == null)
-                    {
-                        return NotFound();
-                    }
-                    return RedirectToAction(nameof(History), new { person.Id });
-                }
-                else if (option == "Name")
-                {
-                    var person = await _context.People.FirstOrDefaultAsync(p => p.FirstName == search.Trim());
-                    if (person == null)
-                    {
-                        return NotFound();
-                    }
-                    return RedirectToAction(nameof(History), new { person.Id });
-                }
-                else
-                {
-                    return StatusCode(400, "Option Or Search Input is required, can not be empty");
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500);
-            }
-        }
+        //public async Task<IActionResult> Search(string option, string search)
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrEmpty(search))
+        //        {
+        //            return StatusCode(400, "Search Input is required, can not be empty");
+        //        }
+        //        if (string.IsNullOrEmpty(option))
+        //        {
+        //            return StatusCode(400, "Option Input is required, can not be empty");
+        //        }
+        //        if (option == "ReservationId")
+        //        {
+        //            int resrvationId = int.Parse(search);
+        //            var reservation = await _context.Reservations.Include(r => r.Person)
+        //                                                              .Include(r => r.Sitting)
+        //                                                              .ThenInclude(s => s.SittingType)
+        //                                                              .Include(r => r.ReservationStatus)
+        //                                                              .Include(r => r.ReservationOrigin)
+        //                                                              .Include(r => r.Tables)
+        //                                                              .FirstOrDefaultAsync(r => r.Id == resrvationId);
+        //            if (reservation == null)
+        //            {
+        //                return NotFound();
+        //            }
+        //            return RedirectToAction(nameof(Details), new { reservation.Id });
+        //        }
+        //        else if (option == "Email")
+        //        {
+        //            var person = await _context.People.FirstOrDefaultAsync(p => p.Email == search.Trim().ToLower());
+        //            if (person == null)
+        //            {
+        //                return NotFound();
+        //            }
+        //            return RedirectToAction(nameof(History), new { person.Id });
+        //        }
+        //        else if (option == "Name")
+        //        {
+        //            var person = await _context.People.FirstOrDefaultAsync(p => p.FirstName == search.Trim());
+        //            if (person == null)
+        //            {
+        //                return NotFound();
+        //            }
+        //            return RedirectToAction(nameof(History), new { person.Id });
+        //        }
+        //        else
+        //        {
+        //            return StatusCode(400, "Option Or Search Input is required, can not be empty");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500);
+        //    }
+        //}
 
         [Authorize(Roles = "Member")]
         public async Task<ActionResult> History(int? id)

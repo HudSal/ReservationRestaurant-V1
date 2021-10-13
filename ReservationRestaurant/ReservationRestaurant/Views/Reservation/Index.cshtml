@@ -9,14 +9,32 @@
 <p>
     <a asp-action="PreCreate">Create New</a>
 </p>
-<form asp-action="Search">
-    <label class="control-label"> <b>Search Option:</b> </label>
-    @Html.RadioButton("option", "ReservationId") <text> Reservation Id </text> 
-    @Html.RadioButton("option", "Email") <text> Person Email </text>
-    @Html.RadioButton("option", "Name")<text> First Name of Person</text>
-    @Html.TextBox("search") 
-    <input type = "submit" name = "submit" asp-action="Search" value= "Search" class="btn btn-primary"/>
-</form>
+<div class="card bg-transparent">
+    <div class="card-body">
+        <form asp-action="Index" method="get">
+
+            <div class="form-actions no-color">
+                <p>
+                    Search Option:
+                    @Html.RadioButton("option", "ReservationId") <text> Reservation Id </text>
+                    <span> </span>
+                    @Html.RadioButton("option", "Email") <text>  Email </text>
+                    <span> </span>
+                    @Html.RadioButton("option", "Name")<text> Last Name</text>
+                    <br />
+                    <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                    <input type="submit" value="Search" class="btn btn-secondary" /> |
+                    <a asp-action="Index">Back to Full List</a>
+                </p>
+                <p>
+                    @Html.ActionLink("Sort by Name", "Index", new { sortOrder = ViewBag.NameSortParm }, new { @class = " btn btn-danger" })
+                    @Html.ActionLink("Sort by StartDate", "Index", new { sortOrder = ViewBag.DateSortParm }, new { @class = " btn btn-danger" })
+                    @Html.ActionLink("Sort by SittingType", "Index", new { sortOrder = ViewBag.TypeSortParm }, new { @class = " btn btn-danger" })
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
 <table class="table">
     <thead>
         <tr>

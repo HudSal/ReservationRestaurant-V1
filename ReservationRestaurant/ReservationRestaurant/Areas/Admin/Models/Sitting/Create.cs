@@ -11,14 +11,14 @@ namespace ReservationRestaurant.Areas.Admin.Models.Sitting
     public class Create
     {
         public string Name { get; set; }
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime { get; set; } = DateTime.Now;
         public DateTime EndTime { get; set; }
         public int Capacity { get; set; }
 
         public int RestaurantId { get; set; }
         public Restaurant Restaurant { get; set; }
 
-
+        [Display(Name = "Sitting")]
         public int SittingTypeId { get; set; }
         public SittingType SittingType { get; set; } //breakfast lunch dinner
 
@@ -26,6 +26,7 @@ namespace ReservationRestaurant.Areas.Admin.Models.Sitting
 
         [Display(Name = "Amount of Days")]
         public int Amount { get; set; }
+        [Display(Name = "Close for Booking")]
         public bool IsClosed { get; set; }
 
     }

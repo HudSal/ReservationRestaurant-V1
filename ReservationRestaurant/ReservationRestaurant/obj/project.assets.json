@@ -7652,19 +7652,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\craig\\.nuget\\packages\\": {}
+    "C:\\Users\\cratl\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\craig\\Desktop\\Project\\ReservationRestaurant-V4-Master\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
+      "projectUniqueName": "C:\\Users\\cratl\\OneDrive\\Desktop\\DIPS PROG\\GroupF_BeanScene\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
       "projectName": "ReservationRestaurant",
-      "projectPath": "C:\\Users\\craig\\Desktop\\Project\\ReservationRestaurant-V4-Master\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
-      "packagesPath": "C:\\Users\\craig\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\craig\\Desktop\\Project\\ReservationRestaurant-V4-Master\\ReservationRestaurant\\ReservationRestaurant\\obj\\",
+      "projectPath": "C:\\Users\\cratl\\OneDrive\\Desktop\\DIPS PROG\\GroupF_BeanScene\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
+      "packagesPath": "C:\\Users\\cratl\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\cratl\\OneDrive\\Desktop\\DIPS PROG\\GroupF_BeanScene\\ReservationRestaurant\\ReservationRestaurant\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\craig\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\cratl\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -7745,7 +7745,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -11,10 +11,14 @@ namespace ReservationRestaurant.Areas.Admin.Models.Sitting
     public class Create
     {
         public string Name { get; set; }
+        [Display(Name = "Date")]
         public DateTime StartTime { get; set; } = DateTime.Now;
         public DateTime EndTime { get; set; }
         public int Capacity { get; set; }
-
+        [Display(Name = "Start Time")]
+        public string Time1 { get; set; }
+        [Display(Name = "EndTime")]
+        public string Time2 { get; set; }
         public int RestaurantId { get; set; }
         public Restaurant Restaurant { get; set; }
 

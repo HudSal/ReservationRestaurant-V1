@@ -1416,3 +1416,5 @@ C:\Users\cratl\OneDrive\Desktop\DIPS PROG\GroupF_BeanScene\ReservationRestaurant
 C:\Users\cratl\OneDrive\Desktop\DIPS PROG\GroupF_BeanScene\ReservationRestaurant\ReservationRestaurant\obj\Debug\net5.0\ref\ReservationRestaurant.dll
 C:\Users\cratl\OneDrive\Desktop\DIPS PROG\GroupF_BeanScene\ReservationRestaurant\ReservationRestaurant\obj\Debug\net5.0\ReservationRestaurant.pdb
 C:\Users\cratl\OneDrive\Desktop\DIPS PROG\GroupF_BeanScene\ReservationRestaurant\ReservationRestaurant\obj\Debug\net5.0\ReservationRestaurant.genruntimeconfig.cache
+C:\Users\cratl\OneDrive\Desktop\DIPS PROG\GroupF_BeanScene\ReservationRestaurant\ReservationRestaurant\obj\Debug\net5.0\Razor\Areas\Admin\Views\Sitting\Report.cshtml.g.cs
+C:\Users\cratl\OneDrive\Desktop\DIPS PROG\GroupF_BeanScene\ReservationRestaurant\ReservationRestaurant\bin\Debug\net5.0\libman.json

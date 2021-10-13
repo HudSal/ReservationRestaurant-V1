@@ -27,7 +27,7 @@ namespace ReservationRestaurant.Controllers
             _personService = personService;
             _userManager = userManager;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string option, string sortOrder)
         {
             var reservation = await _context.Reservations.Include(r => r.Person)
                                                        .Include(r => r.Sitting)
@@ -36,6 +36,58 @@ namespace ReservationRestaurant.Controllers
                                                        .Include(r => r.ReservationOrigin)
                                                        .Include(r => r.Tables)
                                                        .OrderBy(r => r.Id).ToArrayAsync();
+
+
+            ViewData["CurrentFilter"] = searchString;
+
+
+
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Name" : "Name";
+            ViewBag.DateSortParm = String.IsNullOrEmpty(sortOrder) ? "Date" : "Date";
+            ViewBag.TypeSortParm = String.IsNullOrEmpty(sortOrder) ? "Sitting" : "Sitting";
+
+
+            switch (sortOrder)
+            {
+                case "Name":
+                    reservation = reservation.OrderBy(s => s.Person.LastName).ToArray();
+                    break;
+                case "Date":
+                    reservation = reservation.OrderBy(s => s.StartTime).ToArray();
+                    break;
+                case "Sitting":
+                    reservation = reservation.OrderBy(s => s.Sitting.SittingTypeId).ToArray();
+                    break;
+                default:
+                    reservation = reservation.OrderBy(s => s.Id).ToArray();
+                    break;
+            }
+
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                if (option == "Name")
+                {
+                    reservation = reservation.Where(s => s.Person.LastName.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToArray();
+                }
+
+                else if (option == "Email")
+                {
+                    reservation = reservation.Where(s => s.Person.Email.Contains(searchString)).ToArray();
+                }
+
+                else if (option == "ReservationId")
+                {
+                    reservation = reservation.Where(s => s.Id == int.Parse(searchString)).ToArray();
+                }
+                else
+                {
+                    return View(reservation);
+                }
+
+            }
+
+
             return View(reservation);
         }
         
@@ -221,62 +273,62 @@ namespace ReservationRestaurant.Controllers
             }
         }
         
-        public async Task<IActionResult> Search(string option, string search)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(search))
-                {
-                    return StatusCode(400, "Search Input is required, can not be empty");
-                }
-                if (string.IsNullOrEmpty(option))
-                {
-                    return StatusCode(400, "Option Input is required, can not be empty");
-                }
-                if (option == "ReservationId")
-                {
-                    int resrvationId = int.Parse(search);
-                    var reservation = await _context.Reservations.Include(r => r.Person)
-                                                                      .Include(r => r.Sitting)
-                                                                      .ThenInclude(s => s.SittingType)
-                                                                      .Include(r => r.ReservationStatus)
-                                                                      .Include(r => r.ReservationOrigin)
-                                                                      .Include(r => r.Tables)
-                                                                      .FirstOrDefaultAsync(r => r.Id == resrvationId);
-                    if (reservation == null)
-                    {
-                        return NotFound();
-                    }
-                    return RedirectToAction(nameof(Details), new { reservation.Id });
-                }
-                else if (option == "Email")
-                {
-                    var person = await _context.People.FirstOrDefaultAsync(p => p.Email == search.Trim().ToLower());
-                    if (person == null)
-                    {
-                        return NotFound();
-                    }
-                    return RedirectToAction(nameof(History), new { person.Id });
-                }
-                else if (option == "Name")
-                {
-                    var person = await _context.People.FirstOrDefaultAsync(p => p.FirstName == search.Trim());
-                    if (person == null)
-                    {
-                        return NotFound();
-                    }
-                    return RedirectToAction(nameof(History), new { person.Id });
-                }
-                else
-                {
-                    return StatusCode(400, "Option Or Search Input is required, can not be empty");
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500);
-            }
-        }
+        //public async Task<IActionResult> Search(string option, string search)
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrEmpty(search))
+        //        {
+        //            return StatusCode(400, "Search Input is required, can not be empty");
+        //        }
+        //        if (string.IsNullOrEmpty(option))
+        //        {
+        //            return StatusCode(400, "Option Input is required, can not be empty");
+        //        }
+        //        if (option == "ReservationId")
+        //        {
+        //            int resrvationId = int.Parse(search);
+        //            var reservation = await _context.Reservations.Include(r => r.Person)
+        //                                                              .Include(r => r.Sitting)
+        //                                                              .ThenInclude(s => s.SittingType)
+        //                                                              .Include(r => r.ReservationStatus)
+        //                                                              .Include(r => r.ReservationOrigin)
+        //                                                              .Include(r => r.Tables)
+        //                                                              .FirstOrDefaultAsync(r => r.Id == resrvationId);
+        //            if (reservation == null)
+        //            {
+        //                return NotFound();
+        //            }
+        //            return RedirectToAction(nameof(Details), new { reservation.Id });
+        //        }
+        //        else if (option == "Email")
+        //        {
+        //            var person = await _context.People.FirstOrDefaultAsync(p => p.Email == search.Trim().ToLower());
+        //            if (person == null)
+        //            {
+        //                return NotFound();
+        //            }
+        //            return RedirectToAction(nameof(History), new { person.Id });
+        //        }
+        //        else if (option == "Name")
+        //        {
+        //            var person = await _context.People.FirstOrDefaultAsync(p => p.FirstName == search.Trim());
+        //            if (person == null)
+        //            {
+        //                return NotFound();
+        //            }
+        //            return RedirectToAction(nameof(History), new { person.Id });
+        //        }
+        //        else
+        //        {
+        //            return StatusCode(400, "Option Or Search Input is required, can not be empty");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500);
+        //    }
+        //}
 
         [Authorize(Roles = "Member")]
         public async Task<ActionResult> History(int? id)

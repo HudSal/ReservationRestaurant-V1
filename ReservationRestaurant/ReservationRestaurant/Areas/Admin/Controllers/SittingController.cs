@@ -240,7 +240,72 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
                 return StatusCode(500);
             }
         }
+        public async Task<IActionResult> Report(int? id)
+        {
+            try
+            {
+                if (!id.HasValue)
+                {
+                    return StatusCode(400, "Id not found");
+                }
+                var sitting = await _context.Sittings.Include(x => x.SittingType).Include(x => x.Restaurant).Include(x => x.Reservations).ThenInclude(x => x.Tables).FirstOrDefaultAsync(x => x.Id == id);
+                var reservations = _context.Reservations.Include(r => r.Tables).Where(r => r.SittingId == sitting.Id);
+                var tables = 0;
+                var phoneBookings = 0;
+                var emailBookings = 0;
+                var onlineBookings = 0;
+                var walkInBookings = 0;
 
+                foreach (var item in reservations)
+                {
+                    tables += item.Tables.Count();
+
+                    switch (item.ReservationOriginId.ToString())
+                    {
+                        case "1":
+                            phoneBookings++;
+                            break;
+                        case "2":
+                            emailBookings++;
+                            break;
+                        case "3":
+                            onlineBookings++;
+                            break;
+                        case "4":
+                            walkInBookings++;
+                            break;
+                    }
+                }
+
+                var m = new Models.Sitting.Report
+                {
+                    Id = sitting.Id,
+                    Name = sitting.Name,
+                    StartTime = sitting.StartTime,
+                    EndTime = sitting.EndTime,
+                    Capacity = sitting.Capacity,
+                    ReservationCount = sitting.Reservations.Count(),
+                    pax = sitting.Pax,
+                    Tables = tables,
+                    SittingType = sitting.SittingType,
+                    Vacanies = sitting.Vacancies,
+                    NumberOfPhoneBookings = phoneBookings,
+                    NumberOfEmailBookings = emailBookings,
+                    NumberOfOnlineBookings = onlineBookings,
+                    NumberOfWalkInBookings = walkInBookings
+
+                };
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                return View(m);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
         public IActionResult ReservationList(int? id)
         {
             //Here we have to include the reservationStatus , ReservationRegion and Person which are in the ReservationList to make it visable in the view

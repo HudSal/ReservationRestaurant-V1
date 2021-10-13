@@ -78,10 +78,11 @@
                 @Html.DisplayFor(modelItem => item.IsClosed)
             </td>
             <td>
-                <a asp-action="Update" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                <a asp-action="ReservationList" asp-route-id="@item.Id">Reservation List</a>
+                <a asp-action="Update" asp-route-id="@item.Id">Edit</a> ||
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> ||
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> ||
+                <a asp-action="ReservationList" asp-route-id="@item.Id">Reservation List</a>||
+                <a asp-action="Report" asp-route-id="@item.Id">View Report</a>
             </td>
         </tr>
 }

@@ -68,22 +68,44 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Create(Models.Sitting.Create psc)
         {
-            for (int i = 0; i < psc.Amount; i++)
+            if (ModelState.IsValid)
             {
-                Sitting stg = new Sitting
+                try
                 {
-                    StartTime = psc.StartTime.AddDays(i),
-                    EndTime = psc.EndTime.AddDays(i),
-                    SittingTypeId = psc.SittingTypeId,
-                    Capacity = psc.Capacity,
-                    RestaurantId = 1,
-                    Name = psc.Name,
-                    IsClosed=psc.IsClosed//-----new 
-                };
-                _context.Sittings.Add(stg);
-                _context.SaveChanges();
+                    DateTime starting = psc.StartTime;
+                    TimeSpan timeStart = TimeSpan.Parse(psc.Time1);
+                    TimeSpan timeEnd = TimeSpan.Parse(psc.Time2);
+                    DateTime startingDateTime = starting.Add(timeStart);
+                    DateTime endingDateTime = starting.Add(timeEnd);
+
+
+                    for (int i = 0; i < psc.Amount; i++)
+                    {
+
+                        Sitting stg = new Sitting
+                        {
+                            SittingTypeId = psc.SittingTypeId,
+                            StartTime = startingDateTime.AddDays(i),
+                            EndTime = endingDateTime.AddDays(i),
+                            Capacity = psc.Capacity,
+                            RestaurantId = 1,
+                            Name = psc.Name,
+                            IsClosed = psc.IsClosed//-----new 
+                        };
+                        _context.Sittings.Add(stg);
+                        _context.SaveChanges();
+                    }
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception)
+                {
+
+
+                }
+
             }
-            return RedirectToAction(nameof(Index));
+            psc.SittingTypeSL = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name));
+            return View(psc);
         }
 
  

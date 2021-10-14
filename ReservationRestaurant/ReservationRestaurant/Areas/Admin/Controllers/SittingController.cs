@@ -196,14 +196,6 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
                     var sittingList = await _context.Sittings.Include(s => s.Reservations)
                         .Include(s=>s.SittingType)
                         .Include(s=>s.Restaurant).FirstOrDefaultAsync(s => s.Id == sitting.Id);
-                                                          
-
-                    if(sittingList.Reservations.Count > 0)
-                    {
-                        ViewBag.ReservationExist = "This sitting cannot be deleted because it has existing reservations." +
-                            "Please delete the reservations before deleting this sitting";
-                        return View(sittingList) ;
-                    }
                     
                     _context.Sittings.Remove(sittingList);
                     await _context.SaveChangesAsync();
@@ -321,5 +313,27 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
             var reservationList = sitting.Reservations.ToList();
             return View(sitting);
         }
+
+        public async Task<IActionResult> DeleteAll(int? id) //deletes all reservations in a sitting 
+        {
+            var sitting = await _context.Sittings.Include(s => s.SittingType)
+                                           .Include(s => s.Reservations).ThenInclude(r => r.ReservationStatus)
+                                           .Include(s => s.Reservations).ThenInclude(r => r.ReservationOrigin)
+                                           .Include(s => s.Reservations).ThenInclude(r => r.Person)
+                                           .Include(s => s.Reservations).ThenInclude(r => r.Tables)
+                                           .Include(s => s.Restaurant)
+                                           .FirstOrDefaultAsync(s => s.Id == id);
+            //var sitting = _context.Sittings.Include(x => x.Reservations)
+            //                                .FirstOrDefault(x => x.Id == id);
+            var reservationList = sitting.Reservations.ToList();
+            foreach (var item in reservationList)
+            {
+                _context.Remove(item);
+            }
+            _context.SaveChanges();
+
+            return RedirectToAction("ReservationList", new { id });
+        }
+
     }
 }

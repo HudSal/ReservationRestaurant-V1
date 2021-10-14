@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using ReservationRestaurant.Data;
 
 namespace ReservationRestaurant.Areas.Identity.Pages.Account.Manage
 {
@@ -13,16 +15,23 @@ namespace ReservationRestaurant.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ApplicationDbContext _context;
 
         public IndexModel(
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,
+            ApplicationDbContext context
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         public string Username { get; set; }
+        public int PersonId { get; set; }
+
+        public int ReservationCount { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -43,12 +52,16 @@ namespace ReservationRestaurant.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var person = await _context.People.Include(x => x.Reservations).FirstOrDefaultAsync(x => x.UserId == user.Id);
 
+            PersonId = person.Id;
             Username = userName;
+            ReservationCount = person.Reservations.Count;
 
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber
+
             };
         }
 
@@ -59,6 +72,7 @@ namespace ReservationRestaurant.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+
 
             await LoadAsync(user);
             return Page();

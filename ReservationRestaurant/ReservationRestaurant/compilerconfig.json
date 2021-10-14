@@ -2,5 +2,9 @@
   {
     "outputFile": "wwwroot/CustomStyle/CentreStyle.css",
     "inputFile": "wwwroot/CustomStyle/CentreStyle.scss"
+  },
+  {
+    "outputFile": "wwwroot/CustomStyle/StyleSheet.css",
+    "inputFile": "wwwroot/CustomStyle/StyleSheet.scss"
   }
 ]

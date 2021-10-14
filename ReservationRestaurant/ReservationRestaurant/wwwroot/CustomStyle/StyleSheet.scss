@@ -12,7 +12,8 @@ $dusty: #ffdeab;
 $colors: ( "blue": $blue, "indigo": $indigo, "purple": $purple, "pink": $pink, "red": $red, "orange": $orange, "yellow": $yellow, "green": $green, "teal": $teal, "cyan": $cyan, "white": $white, "gray": $gray-600, "gray-dark": $gray-800, "coffee": $coffee, "sandy":$sandy, "chocs":$chocs);
 $input-bg: $dusty;
 $theme-colors: ( "primary": $chocs, "secondary": $secondary, "success": $success, "info": $info, "warning": $warning, "danger": $danger, "light": $light, "dark": $dark, "sandy": $sandy, "chocs":$chocs, "coffee":$coffee);
-
+$component-active-color: $sandy;
+$component-active-bg: $chocs;
 
 $body-color: $coffee; /*font of the body*/
 $link-color: $chocs; /* colour for any underlined link*/

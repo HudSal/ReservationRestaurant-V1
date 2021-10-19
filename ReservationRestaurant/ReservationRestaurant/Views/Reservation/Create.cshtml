@@ -9,7 +9,7 @@
     <h4>Booking for:</h4>
     <h6>@Model.StartTime</h6>
     <hr />
-    @if (Model.PersonId > 0)
+    @if (User.IsInRole("Member") && !User.IsInRole("Manager"))
     {
         <div>@Model.FirstName @Model.LastName</div>
         <div>@Model.Email</div>
@@ -20,7 +20,7 @@
         <div class="form-group">
             <label asp-for="FirstName" class="control-label"></label>
             <input asp-for="FirstName" class="form-control" />
-            <span asp-validation-for="FirstName" class="text-danger">*</span>
+            <span asp-validation-for="FirstName" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="LastName" class="control-label"></label>
@@ -30,15 +30,15 @@
         <div class="form-group">
             <label asp-for="Email" class="control-label"></label>
             <input asp-for="Email" class="form-control" />
-            <span asp-validation-for="Email" class="text-danger">*</span>
+            <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="PhoneNumber" class="control-label"></label>
             <input asp-for="PhoneNumber" class="form-control" />
-            <span asp-validation-for="PhoneNumber" class="text-danger">*</span>
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
         </div>
     }
-     <div class="form-group">
+    <div class="form-group">
         <label asp-for="TimeSlotID" class="control-label"></label>
         <select asp-for="TimeSlotID" class="form-control" asp-items="Model.TimeSL">
             <option value="">-- select time --</option>
@@ -49,6 +49,16 @@
         <input asp-for="Duration" class="form-control" />
         <span asp-validation-for="Duration" class="text-danger"></span>
     </div>
+    @if (User.IsInRole("Manager") || User.IsInRole("Employee"))
+    {
+        <div class="form-group">
+            <label asp-for="ReservationOriginId" class="control-label"></label>
+            <select asp-for="ReservationOriginId" id="sitting" class="form-control" asp-items="ViewBag.ReservationOriginId">
+                <option value="">-- select sitting --</option>
+            </select>
+            <span asp-validation-for="SittingTypeId" class="text-success"></span>
+        </div>
+    }
     <div class="form-group">
         <label asp-for="SpecialRequirement" class="control-label"></label>
         <textarea asp-for="SpecialRequirement" class="form-control"></textarea>
@@ -57,19 +67,21 @@
     <div class="form-group">
         <input type="submit" value="Create" class="btn btn-primary" />
     </div>
+
+    <p class="text-danger">@ViewBag.Validation</p>
     @if (User.IsInRole("Manager") || User.IsInRole("Employee"))
     {
         <a asp-action="Index">Back to List</a>
     }
-    <input type="hidden" asp-for="PersonId" />
-    <input type="hidden" asp-for="SittingTypeId" />
-    <input type="hidden" asp-for="Guests" />
-    <input type="hidden" asp-for="SittingId" />
-    <input type="hidden" asp-for="StartTime" />
-    <input type="hidden" asp-for="FirstName" />
-    <input type="hidden" asp-for="LastName" />
-    <input type="hidden" asp-for="Email" />
-    <input type="hidden" asp-for="PhoneNumber" />
+    <input style="display:none" asp-for="PersonId" />
+    <input style="display:none" asp-for="SittingTypeId" />
+    <input style="display:none" asp-for="Guests" />
+    <input style="display:none" asp-for="SittingId" />
+    <input style="display:none" asp-for="StartTime" />
+    <input style="display:none" id="1" asp-for="FirstName" />
+    <input style="display:none" id="2" asp-for="LastName" />
+    <input style="display:none" id="3" asp-for="Email" />
+    <input style="display:none" id="4" asp-for="PhoneNumber" />
 </form>
 
 

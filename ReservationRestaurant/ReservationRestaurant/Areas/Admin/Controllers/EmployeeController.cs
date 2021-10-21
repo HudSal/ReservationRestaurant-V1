@@ -27,18 +27,25 @@ namespace ReservationRestaurant.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var person = new Person();
+            
             var emp = new List<Person>();           
             var users = await _userManager.GetUsersInRoleAsync("Employee"); //get all users in Employee role 
             var people = await _context.People.ToListAsync(); //get all people from people table 
             foreach (var item in users)
             {
-                person = people.Where(p => p.UserId == item.Id).FirstOrDefault(); //compare user Id 
+                var person = people.Where(p => p.UserId == item.Id).FirstOrDefault(); //compare user Id 
                 //person = await _context.People.Where(p => p.UserId == item.Id).SingleOrDefaultAsync();
-                emp.Add(person); //add to list 
+                if (person == null)
+                {
+                    RedirectToAction("Create", "Employee");
+                }
+                else
+                {
+                     //add to list
+                     emp.Add(person);
+                }                
             }
             return View(emp);
-
         }
 
         [HttpGet]

@@ -37,6 +37,8 @@ namespace ReservationRestaurant
 
 
             services.AddScoped<PersonService>();
+            services.AddTransient<iEmailService, SendGridEmailService>();
+
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();

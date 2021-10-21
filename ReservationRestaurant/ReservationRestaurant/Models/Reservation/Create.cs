@@ -27,7 +27,7 @@ namespace ReservationRestaurant.Models.Reservation
         [Display(Name = "Special Requirement")]
         public string SpecialRequirement { get; set; } = "None";
         [Display(Name = "Duration Time in minutes")]
-        public int Duration { get; set; } = 90;
+        public int Duration { get; set; } = 60;
         [Display(Name = "Sitting Name")]
         [Required(ErrorMessage = "Rservation - Sitting Type: Required")]
         public int SittingId { get; set; }

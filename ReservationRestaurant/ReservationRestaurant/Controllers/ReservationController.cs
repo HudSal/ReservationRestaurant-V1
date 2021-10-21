@@ -21,13 +21,15 @@ namespace ReservationRestaurant.Controllers
         private readonly PersonService _personService;
         private readonly UserManager<IdentityUser> _userManager;
         private IMapper _mapper;
-        public ReservationController(ApplicationDbContext context, PersonService personService, UserManager<IdentityUser> userManager)
+        private iEmailService _iEmailService;
+        public ReservationController(ApplicationDbContext context, PersonService personService, UserManager<IdentityUser> userManager, iEmailService iEmailService)
         {
             var config = new MapperConfiguration(cfg => cfg.CreateMap<Models.Reservation.Update, Data.Reservation>().ReverseMap().ForAllOtherMembers(x => x.Ignore()));
             _mapper = new Mapper(config);
             _context = context;
             _personService = personService;
             _userManager = userManager;
+            _iEmailService = iEmailService;
         }
         #region Index
         [Authorize(Roles = "Manager")]
@@ -277,9 +279,11 @@ namespace ReservationRestaurant.Controllers
                     SittingId = mo.SittingId,
                     TimeSL = timeSlotSL
                 };
-                if (User.Identity.IsAuthenticated)// if the user has loged in
+                if (User.Identity.IsAuthenticated && !(User.IsInRole("Manager") || User.IsInRole("Employee")))   // if the user has logged in
                 {
+
                     var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
                     var person = await _context.People.FirstOrDefaultAsync(p => p.UserId == user.Id);
                     if (person != null)
                     {
@@ -289,10 +293,14 @@ namespace ReservationRestaurant.Controllers
                         m.LastName = person.LastName;
                         m.PhoneNumber = person.Phone;
                     }
-
+                    
+                }
                     List<ReservationOrigin> bookingOrigin = _context.ReservationOrigins.ToList();
                     ViewBag.ReservationOriginId = new SelectList(bookingOrigin, "Id", "Name");
-                }
+
+                
+
+
                 return View(m);
 
             }
@@ -300,9 +308,7 @@ namespace ReservationRestaurant.Controllers
             {
                 return StatusCode(500);
             }
-
         }
-
 
         [HttpPost]
         [ActionName("Create")]
@@ -359,6 +365,7 @@ namespace ReservationRestaurant.Controllers
                 };
                 _context.Reservations.Add(reservation);
                 await _context.SaveChangesAsync();
+                await _iEmailService.SendEmailAsync(m.Email, "Booking Confirmation", "<h1>Booking Confirmed</h1><p>Your Booking has been recieved</p>");
                 return RedirectToAction(nameof(Details), new { reservation.Id });
             }
             if (!ModelState.IsValid)
@@ -377,6 +384,9 @@ namespace ReservationRestaurant.Controllers
             }
             List<ReservationOrigin> bookingOrigin = _context.ReservationOrigins.ToList();
             ViewBag.ReservationOriginId = new SelectList(bookingOrigin, "Id", "Name");
+
+
+           
             return View(m);
         }
 

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "QkwpL/C+81FM//yz4Ez//mPzotz0Z7jtHPTzR2l/S3W6NZueNjoCRsE+NSWVN1Jjd32govWZx8IxePWOpParig==",
+  "dgSpecHash": "jM153c/ps9E71eUnjxZH5sg5jMtFTTf/dKbBUMQh1r9b/0EuGkt58BcvTi8BA4jJuRDLpm7yzwPqH+gMxUou+w==",
   "success": true,
   "projectFilePath": "C:\\Users\\craig\\Desktop\\Project\\ReservationRestaurant-V4-Master\\ReservationRestaurant\\ReservationRestaurant\\ReservationRestaurant.csproj",
   "expectedPackageFiles": [
@@ -69,6 +69,8 @@
     "C:\\Users\\craig\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
     "C:\\Users\\craig\\.nuget\\packages\\newtonsoft.json\\11.0.2\\newtonsoft.json.11.0.2.nupkg.sha512",
     "C:\\Users\\craig\\.nuget\\packages\\runtime.native.system\\4.3.0\\runtime.native.system.4.3.0.nupkg.sha512",
+    "C:\\Users\\craig\\.nuget\\packages\\sendgrid\\9.24.4\\sendgrid.9.24.4.nupkg.sha512",
+    "C:\\Users\\craig\\.nuget\\packages\\starkbank-ecdsa\\1.3.1\\starkbank-ecdsa.1.3.1.nupkg.sha512",
     "C:\\Users\\craig\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
     "C:\\Users\\craig\\.nuget\\packages\\system.collections.concurrent\\4.3.0\\system.collections.concurrent.4.3.0.nupkg.sha512",
     "C:\\Users\\craig\\.nuget\\packages\\system.collections.immutable\\5.0.0\\system.collections.immutable.5.0.0.nupkg.sha512",

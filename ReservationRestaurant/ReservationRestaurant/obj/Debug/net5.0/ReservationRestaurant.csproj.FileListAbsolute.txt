@@ -1901,3 +1901,5 @@ C:\Users\cratl\OneDrive\Desktop\DIPS PROG\GroupF_BeanScene\ReservationRestaurant
 C:\Users\cratl\OneDrive\Desktop\DIPS PROG\GroupF_BeanScene\ReservationRestaurant\ReservationRestaurant\obj\Debug\net5.0\Razor\Areas\Admin\Views\Sitting\Report.cshtml.g.cs
 C:\Users\craig\Desktop\Project\ReservationRestaurant-V4-Master\ReservationRestaurant\ReservationRestaurant\bin\Debug\net5.0\libman.json
 C:\Users\craig\Desktop\Project\ReservationRestaurant-V4-Master\ReservationRestaurant\ReservationRestaurant\obj\Debug\net5.0\ReservationRestaurant.csproj.AssemblyReference.cache
+C:\Users\craig\Desktop\Project\ReservationRestaurant-V4-Master\ReservationRestaurant\ReservationRestaurant\bin\Debug\net5.0\SendGrid.dll
+C:\Users\craig\Desktop\Project\ReservationRestaurant-V4-Master\ReservationRestaurant\ReservationRestaurant\bin\Debug\net5.0\StarkbankEcdsa.dll
